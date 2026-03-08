@@ -69,7 +69,7 @@ function App() {
       {currentPage !== 'cover' && (
         <button
           onClick={() => setMenuOpen(true)}
-          className="fixed top-6 right-6 z-50 p-2.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white transition-all hover:scale-105 active:scale-95 shadow-lg"
+          className="fixed top-6 right-6 z-[60] p-2.5 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white transition-all hover:scale-105 active:scale-95 shadow-lg"
           aria-label="Open menu"
         >
           <MenuIcon className="w-6 h-6" />

@@ -184,6 +184,15 @@ export const translations = {
     wikiCategoryCaution: '注意',
     wikiCategoryWarning: '警告',
     wikiNoResults: '找不到相關成分',
+    suitableFor: '適合對象',
+    hazardAnalysis: '危害分析 (青少年專注)',
+    hazardRisks: {
+      alcohol: '變性酒精：對青少年開發中的肌膚屏障具高刺激性，可能導致長期敏感。',
+      fragrance: '人工香料：常見過敏原，可能引發皮炎或接觸性不適。',
+      salicylic_acid: '水楊酸：高濃度可能過度剝離角質，對學齡肌膚負擔較重。',
+      retinol: 'A醇：抗老成分對青少年非必要且具高刺激性，易造成脫皮受損。',
+      silicone: '矽靈：可能封閉毛孔，對於皮脂腺旺盛的青少年恐誘發粉刺。',
+    },
 
     // Footer
     footerText: 'Smart Buy Safe Skin © 2024',
@@ -373,6 +382,15 @@ export const translations = {
     wikiCategoryCaution: 'Caution',
     wikiCategoryWarning: 'Warning',
     wikiNoResults: 'No ingredients found',
+    suitableFor: 'Suitable For',
+    hazardAnalysis: 'Hazard Analysis (Teen Focus)',
+    hazardRisks: {
+      alcohol: 'Denatured Alcohol: Highly irritating to developing skin barriers, may cause long-term sensitivity.',
+      fragrance: 'Artificial Fragrance: Common allergen, can trigger dermatitis or contact discomfort.',
+      salicylic_acid: 'Salicylic Acid: High concentrations may over-exfoliate, heavy burden for student skin.',
+      retinol: 'Retinol: Anti-aging active is unnecessary and highly irritating for teens, causes peeling.',
+      silicone: 'Silicone: May clog pores; risky for sebum-active teen skin, potentially inducing acne.',
+    },
 
     // Footer
     footerText: 'Smart Buy Safe Skin © 2024',
@@ -562,6 +580,15 @@ export const translations = {
     wikiCategoryCaution: '注意',
     wikiCategoryWarning: '警告',
     wikiNoResults: '成分が見つかりませんでした',
+    suitableFor: '適した対象',
+    hazardAnalysis: '危害分析 (ターゲット：ティーン)',
+    hazardRisks: {
+      alcohol: '変性アルコール：発達中の肌バリアに強い刺激を与え、長期的な敏感肌の原因になる可能性があります。',
+      fragrance: '人工香料：一般的なアレルゲンであり、皮膚炎や不快感を引き起こす可能性があります。',
+      salicylic_acid: 'サリチル酸：高濃度では過剰な角質剥離を招き、学生の肌には負担が大きすぎます。',
+      retinol: 'レチノール：エイジングケア成分はティーンには不要で、刺激が強く皮むけの原因になります。',
+      silicone: 'シリコン：毛穴を塞ぐ可能性があり、皮脂分泌が盛んなティーンにはニキビの原因になります。',
+    },
 
     // Footer
     footerText: 'Smart Buy Safe Skin © 2024',

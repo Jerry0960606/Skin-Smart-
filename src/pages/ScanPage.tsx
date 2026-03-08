@@ -19,10 +19,17 @@ export default function ScanPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const scanTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isMounted = useRef(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 100);
-    return () => clearTimeout(timer);
+    isMounted.current = true;
+    const timer = setTimeout(() => {
+      if (isMounted.current) setIsVisible(true);
+    }, 100);
+    return () => {
+      isMounted.current = false;
+      clearTimeout(timer);
+    };
   }, []);
 
   const stopCamera = async () => {
@@ -34,7 +41,9 @@ export default function ScanPage() {
     // Stop Html5Qrcode if running
     if (scannerRef.current) {
       try {
-        await scannerRef.current.stop();
+        if (scannerRef.current.isScanning) {
+          await scannerRef.current.stop();
+        }
         scannerRef.current.clear();
       } catch (err) {
         console.error('Error stopping scanner', err);
@@ -45,7 +54,10 @@ export default function ScanPage() {
     // Stop standard video track if running (for ingredients mode)
     if (videoRef.current?.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach(track => {
+        track.stop();
+        stream.removeTrack(track);
+      });
       videoRef.current.srcObject = null;
     }
   };
@@ -53,15 +65,27 @@ export default function ScanPage() {
   useEffect(() => {
     // Only init standard camera for ingredients mode here
     if (showCamera && inputType === 'ingredients' && videoRef.current) {
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-        .then(stream => {
-          if (videoRef.current) {
+      const startCamera = async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              facingMode: 'environment',
+              width: { ideal: 1280 },
+              height: { ideal: 720 }
+            }
+          });
+          if (videoRef.current && isMounted.current) {
             videoRef.current.srcObject = stream;
           }
-        })
-        .catch(err => {
+        } catch (err) {
           console.error('Camera error:', err);
-        });
+          if (isMounted.current) {
+            // Handle specific errors like NotAllowedError or NotFoundError
+            setShowCamera(false);
+          }
+        }
+      };
+      startCamera();
     }
 
     return () => {
@@ -206,10 +230,10 @@ export default function ScanPage() {
   };
 
   return (
-    <div className="min-h-screen gradient-navy flex flex-col px-6 py-8 relative overflow-hidden">
+    <div className="min-h-screen gradient-navy flex flex-col px-4 sm:px-6 py-6 sm:py-8 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/3 left-1/4 w-40 h-40 bg-coral/10 rounded-full blur-3xl" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-32 h-32 sm:w-40 sm:h-40 bg-coral/10 rounded-full blur-3xl" />
       </div>
 
       {/* Header */}
@@ -223,9 +247,9 @@ export default function ScanPage() {
       </div>
 
       {/* Main content */}
-      <div className={`relative z-10 flex-1 flex flex-col items-center justify-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div className={`relative z-10 flex-1 flex flex-col items-center justify-start sm:justify-center overflow-y-auto scrollbar-hide transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         {!showCamera ? (
-          <>
+          <div className="w-full flex flex-col items-center py-4">
             {/* Title */}
             <h1 className="text-3xl md:text-4xl font-bold text-white mb-4 text-center">
               {t.scanTitle}
@@ -236,11 +260,11 @@ export default function ScanPage() {
             </p>
 
             {/* Character */}
-            <div className="mb-10">
+            <div className="mb-6 sm:mb-10 shrink-0">
               <img
                 src="/images/Scan Caracter.png"
                 alt="Ready to scan"
-                className="w-40 h-40 object-contain"
+                className="w-32 h-32 sm:w-40 sm:h-40 object-contain mx-auto"
               />
             </div>
 
@@ -301,11 +325,11 @@ export default function ScanPage() {
             </Tabs>
 
             {/* Hint */}
-            <p className="text-white/40 text-sm text-center">
+            <p className="text-white/40 text-sm text-center mb-4">
               <Camera className="w-4 h-4 inline mr-1" />
               {t.scanHint}
             </p>
-          </>
+          </div>
         ) : (
           /* Camera view */
           <div className="w-full max-w-md">

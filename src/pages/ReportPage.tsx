@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { translations } from '@/i18n/translations';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, CheckCircle, AlertCircle, XCircle, Info, ChevronRight } from 'lucide-react';
+import { ChevronLeft, CheckCircle, AlertCircle, XCircle, Info, ChevronRight, Sparkles } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { searchProductByBarcode, searchProductsByIngredients, getIngredientSafety } from '@/data/products';
 
@@ -87,65 +87,11 @@ export default function ReportPage() {
     return [];
   };
 
-  // Get warnings based on skin type
-  const getWarnings = () => {
-    if (!foundProduct) return [];
-
-    const warnings = [];
-    const productWarnings = foundProduct.warnings || [];
-
-    if (productWarnings.includes('alcohol')) {
-      warnings.push({
-        'zh-TW': '含有酒精，可能使肌膚乾燥，乾性/敏感肌需謹慎',
-        'en': 'Contains alcohol, may dry out skin. Caution for dry/sensitive skin',
-        'ja': 'アルコールを含み、肌を乾燥させる可能性があります。乾燥肌/敏感肌は注意',
-      }[language]);
-    }
-
-    if (productWarnings.includes('fragrance')) {
-      warnings.push({
-        'zh-TW': '含有香料，敏感肌可能引起過敏反應',
-        'en': 'Contains fragrance, may cause allergic reactions for sensitive skin',
-        'ja': '香料を含み、敏感肌にアレルギー反応を起こす可能性があります',
-      }[language]);
-    }
-
-    if (productWarnings.includes('salicylic_acid')) {
-      warnings.push({
-        'zh-TW': '含有水楊酸，孕婦及敏感肌請諮詢醫師後使用',
-        'en': 'Contains salicylic acid. Pregnant women and sensitive skin should consult a doctor',
-        'ja': 'サリチル酸を含みます。妊婦及び敏感肌は医師に相談してください',
-      }[language]);
-    }
-
-    if (productWarnings.includes('retinol')) {
-      warnings.push({
-        'zh-TW': '含有維生素A衍生物，初次使用請從低濃度開始',
-        'en': 'Contains vitamin A derivative. Start with low concentration for first-time use',
-        'ja': 'ビタミンA誘導体を含みます。初めて使用する場合は低濃度から始めてください',
-      }[language]);
-    }
-
-    if (productWarnings.includes('silicone')) {
-      warnings.push({
-        'zh-TW': '含有矽靈，易長痘痘的肌膚需注意',
-        'en': 'Contains silicone. Acne-prone skin should use with caution',
-        'ja': 'シリコンを含みます。ニキビができやすい肌は注意して使用してください',
-      }[language]);
-    }
-
-    // Add Personal Blacklist warnings
-    const ingredients = foundProduct ? foundProduct.ingredients : (latestRecord?.ingredients || []);
-    const matchedBlacklist = ingredients.filter((ing: string) =>
-      blacklist.some(b => ing.toLowerCase().includes(b.toLowerCase()))
-    );
-
-    matchedBlacklist.forEach((ing: string) => {
-      warnings.push(t.blacklistWarning.replace('{name}', ing));
-    });
-
-    return warnings;
-  };
+  // Get matched blacklist ingredients for warnings
+  const ingredients = foundProduct ? foundProduct.ingredients : (latestRecord?.ingredients || []);
+  const matchedBlacklist = ingredients.filter((ing: string) =>
+    blacklist.some(b => ing.toLowerCase().includes(b.toLowerCase()))
+  );
 
   // Get recommendations
   const getRecommendations = () => {
@@ -169,64 +115,7 @@ export default function ReportPage() {
     return recs[language];
   };
 
-  // Get good for skin types text
-  const getGoodForText = () => {
-    if (!foundProduct?.goodFor) return '';
-
-    const skinTypeNames = {
-      'zh-TW': {
-        all: '所有膚質',
-        dry: '乾性肌',
-        oily: '油性肌',
-        combination: '混合肌',
-        sensitive: '敏感肌',
-        normal: '一般肌',
-        acne: '痘痘肌',
-        mature: '熟齡肌',
-        dehydrated: '缺水肌',
-        dull: '暗沉肌',
-        pores: '毛孔粗大',
-        eczema: '濕疹肌',
-        outdoor: '戶外活動',
-      },
-      'en': {
-        all: 'All skin types',
-        dry: 'Dry skin',
-        oily: 'Oily skin',
-        combination: 'Combination skin',
-        sensitive: 'Sensitive skin',
-        normal: 'Normal skin',
-        acne: 'Acne-prone skin',
-        mature: 'Mature skin',
-        dehydrated: 'Dehydrated skin',
-        dull: 'Dull skin',
-        pores: 'Large pores',
-        eczema: 'Eczema-prone skin',
-        outdoor: 'Outdoor activities',
-      },
-      'ja': {
-        all: 'すべての肌タイプ',
-        dry: '乾燥肌',
-        oily: '脂性肌',
-        combination: '混合肌',
-        sensitive: '敏感肌',
-        normal: '普通肌',
-        acne: 'ニキビ肌',
-        mature: '熟齢肌',
-        dehydrated: '脱水肌',
-        dull: 'くすんだ肌',
-        pores: '毛穴が目立つ',
-        eczema: '湿疹のある肌',
-        outdoor: 'アウトドア活動',
-      },
-    };
-
-    const names = skinTypeNames[language];
-    return foundProduct.goodFor.map((type: string) => names[type as keyof typeof names] || type).join('、');
-  };
-
   const ingredientAnalysis = getIngredientAnalysis();
-  const warnings = getWarnings();
   const recommendations = getRecommendations();
 
   return (
@@ -277,13 +166,44 @@ export default function ReportPage() {
             </div>
           </div>
 
-          {/* Good for skin types */}
+          {/* Suitable For */}
           {foundProduct?.goodFor && (
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 mb-6">
-              <p className="text-white/60 text-sm mb-2">
-                {language === 'zh-TW' ? '適合膚質' : language === 'en' ? 'Good for' : '適した肌タイプ'}
-              </p>
-              <p className="text-white">{getGoodForText()}</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="w-5 h-5 text-coral" />
+                <h3 className="text-lg font-bold text-white">{t.suitableFor}</h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {foundProduct.goodFor.map((type: string, idx: number) => {
+                  const skinTypeNames = {
+                    'zh-TW': {
+                      all: '所有膚質', dry: '乾性肌', oily: '油性肌', combination: '混合肌',
+                      sensitive: '敏感肌', normal: '一般肌', acne: '痘痘肌', mature: '熟齡肌',
+                      dehydrated: '缺水肌', dull: '暗沉肌', pores: '毛孔粗大', eczema: '濕疹肌',
+                      outdoor: '戶外活動',
+                    },
+                    'en': {
+                      all: 'All skin types', dry: 'Dry skin', oily: 'Oily skin', combination: 'Combination skin',
+                      sensitive: 'Sensitive skin', normal: 'Normal skin', acne: 'Acne-prone skin', mature: 'Mature skin',
+                      dehydrated: 'Dehydrated skin', dull: 'Dull skin', pores: 'Large pores', eczema: 'Eczema-prone skin',
+                      outdoor: 'Outdoor activities',
+                    },
+                    'ja': {
+                      all: 'すべての肌タイプ', dry: '乾燥肌', oily: '脂性肌', combination: '混合肌',
+                      sensitive: '敏感肌', normal: '普通肌', acne: 'ニキビ肌', mature: '熟齢肌',
+                      dehydrated: '脱水肌', dull: 'くすんだ肌', pores: '毛穴が目立つ', eczema: '湿疹のある肌',
+                      outdoor: 'アウトドア活動',
+                    },
+                  };
+                  const names = skinTypeNames[language];
+                  const label = (names as any)[type] || type;
+                  return (
+                    <span key={idx} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-sm text-white/80">
+                      {label}
+                    </span>
+                  );
+                })}
+              </div>
             </div>
           )}
 
@@ -353,6 +273,37 @@ export default function ReportPage() {
             </div>
           </div>
 
+          {/* Hazard Analysis */}
+          {(foundProduct?.warnings?.length > 0 || matchedBlacklist.length > 0) && (
+            <div className={`bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-6 border ${result === 'yellow' ? 'border-amber-500/30' : result === 'red' ? 'border-rose-500/30' : 'border-white/10'}`}>
+              <div className="flex items-center gap-2 mb-4">
+                <AlertCircle className={`w-5 h-5 ${result === 'green' ? 'text-emerald-400' : result === 'yellow' ? 'text-amber-400' : 'text-rose-400'}`} />
+                <h3 className="text-lg font-bold text-white">{t.hazardAnalysis}</h3>
+              </div>
+              <div className="space-y-4">
+                {foundProduct?.warnings?.map((warning: string, idx: number) => {
+                  const riskDescription = (t.hazardRisks as any)[warning];
+                  if (!riskDescription) return null;
+                  return (
+                    <div key={idx} className="p-3 bg-white/5 rounded-xl border border-white/5">
+                      <p className="text-white/90 text-sm leading-relaxed">{riskDescription}</p>
+                    </div>
+                  );
+                })}
+
+                {/* Blacklist warnings */}
+                {matchedBlacklist.map((ing: string, idx: number) => (
+                  <div key={`bl-${idx}`} className="p-3 bg-rose-500/10 rounded-xl border border-rose-500/20 flex gap-2 items-start">
+                    <XCircle className="w-5 h-5 text-rose-400 flex-shrink-0 mt-0.5" />
+                    <p className="text-rose-300 text-sm font-medium">
+                      {t.blacklistWarning.replace('{name}', ing)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Ingredients analysis */}
           {ingredientAnalysis.length > 0 && (
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-6">
@@ -377,23 +328,6 @@ export default function ReportPage() {
                   </button>
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* Warnings */}
-          {warnings.length > 0 && (
-            <div className={`rounded-2xl p-6 mb-6 ${result === 'yellow' ? 'bg-amber-500/20' : 'bg-rose-500/20'
-              }`}>
-              <h3 className="text-lg font-bold text-white mb-3">{t.warnings}</h3>
-              <ul className="space-y-2">
-                {warnings.map((warning, index) => (
-                  <li key={index} className={`flex items-start gap-2 ${result === 'yellow' ? 'text-amber-300' : 'text-rose-300'
-                    }`}>
-                    <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                    <span>{warning}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
           )}
 
