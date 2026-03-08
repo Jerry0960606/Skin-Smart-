@@ -20,6 +20,7 @@ export interface ScanRecord {
   safetyScore: number;
   matchScore: number;
   imageUrl?: string;
+  ingredients: string[];
 }
 
 interface AppState {
@@ -60,9 +61,19 @@ interface AppState {
   deleteFromHistory: (id: string) => void;
   clearHistory: () => void;
 
+  // Blacklist
+  blacklist: string[];
+  addToBlacklist: (ingredient: string) => void;
+  removeFromBlacklist: (ingredient: string) => void;
+
+  // Comparison
+  selectedComparisonIds: string[];
+  toggleComparisonSelection: (id: string) => void;
+  clearComparisonSelection: () => void;
+
   // Navigation
-  currentPage: string;
-  setCurrentPage: (page: string) => void;
+  currentPage: 'cover' | 'reminder' | 'gender' | 'quiz' | 'scan' | 'manual-input' | 'login' | 'analyzing' | 'result' | 'report' | 'history' | 'help' | 'about' | 'settings' | 'comparison' | 'wiki';
+  setCurrentPage: (page: 'cover' | 'reminder' | 'gender' | 'quiz' | 'scan' | 'manual-input' | 'login' | 'analyzing' | 'result' | 'report' | 'history' | 'help' | 'about' | 'settings' | 'comparison' | 'wiki') => void;
 
   // Menu
   isMenuOpen: boolean;
@@ -160,6 +171,32 @@ export const useAppStore = create<AppState>()(
       },
       clearHistory: () => set({ scanHistory: [] }),
 
+      // Blacklist
+      blacklist: [],
+      addToBlacklist: (ingredient) => {
+        if (!get().blacklist.includes(ingredient)) {
+          set({ blacklist: [...get().blacklist, ingredient] });
+        }
+      },
+      removeFromBlacklist: (ingredient) => {
+        set({ blacklist: get().blacklist.filter(i => i !== ingredient) });
+      },
+
+      // Comparison
+      selectedComparisonIds: [],
+      toggleComparisonSelection: (id) => {
+        const current = get().selectedComparisonIds;
+        if (current.includes(id)) {
+          set({ selectedComparisonIds: current.filter(i => i !== id) });
+        } else {
+          // Limit to 2 for side-by-side comparison
+          if (current.length < 2) {
+            set({ selectedComparisonIds: [...current, id] });
+          }
+        }
+      },
+      clearComparisonSelection: () => set({ selectedComparisonIds: [] }),
+
       // Navigation
       currentPage: 'cover',
       setCurrentPage: (page) => set({ currentPage: page }),
@@ -176,6 +213,7 @@ export const useAppStore = create<AppState>()(
         skinType: null,
         currentProduct: null,
         currentResult: null,
+        selectedComparisonIds: [],
       }),
     }),
     {
@@ -183,7 +221,12 @@ export const useAppStore = create<AppState>()(
       partialize: (state) => ({
         language: state.language,
         scanHistory: state.scanHistory,
+        blacklist: state.blacklist,
+        isAuthenticated: state.isAuthenticated,
+        skinType: state.skinType,
+        gender: state.gender,
       }),
     }
   )
 );
+

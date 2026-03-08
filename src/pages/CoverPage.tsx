@@ -1,19 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { translations } from '@/i18n/translations';
 import { Button } from '@/components/ui/button';
-import { Globe } from 'lucide-react';
+import { Globe, Sparkles, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function CoverPage() {
   const { language, setLanguage, setCurrentPage } = useAppStore();
   const t = translations[language];
-  const [isVisible, setIsVisible] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   const languages = [
     { code: 'zh-TW', label: '繁體中文' },
@@ -52,8 +47,8 @@ export default function CoverPage() {
                     setShowLangMenu(false);
                   }}
                   className={`w-full px-4 py-3 text-left text-sm transition-colors ${language === lang.code
-                      ? 'bg-coral/20 text-coral'
-                      : 'text-white hover:bg-white/10'
+                    ? 'bg-coral/20 text-coral'
+                    : 'text-white hover:bg-white/10'
                     }`}
                 >
                   {lang.label}
@@ -65,41 +60,101 @@ export default function CoverPage() {
       </div>
 
       {/* Main content */}
-      <div className={`relative z-10 flex flex-col items-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div className="relative z-10 flex flex-col items-center max-w-lg w-full">
         {/* Logo/Character */}
-        <div className="mb-8 animate-float">
-          <img
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="mb-8 relative"
+        >
+          <motion.div
+            animate={{
+              scale: [1, 1.1, 1],
+              opacity: [0.2, 0.4, 0.2]
+            }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute inset-0 bg-coral/20 rounded-full blur-3xl -z-10"
+          />
+          <motion.img
+            animate={{ y: [0, -15, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
             src="/images/Transition_Mascot.png"
             alt="Dr. Lipstick"
-            className="w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-2xl"
+            className="w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-[0_0_30px_rgba(255,127,80,0.3)]"
           />
-        </div>
+        </motion.div>
 
         {/* Title */}
         <div className="text-center mb-6">
-          <h1 className="text-4xl md:text-6xl font-bold text-white whitespace-pre-line leading-tight text-shadow-glow">
-            {t.coverTitle}
-          </h1>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="text-4xl md:text-6xl font-black text-white whitespace-pre-line leading-tight text-shadow-glow tracking-tighter"
+          >
+            {t.coverTitle.split(' ').map((word, i) => (
+              <span key={i} className={word.toUpperCase() === 'SMART' || word.toUpperCase() === 'SAFE' ? 'text-coral' : ''}>
+                {word}{' '}
+              </span>
+            ))}
+          </motion.h1>
         </div>
 
         {/* Subtitle */}
-        <p className="text-white/70 text-lg md:text-xl text-center mb-12 max-w-md">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 1 }}
+          className="text-white/60 text-lg md:text-xl text-center mb-12 max-w-sm font-medium"
+        >
           {t.coverSubtitle}
-        </p>
+        </motion.p>
 
         {/* CTA Button */}
-        <Button
-          onClick={() => setCurrentPage('reminder')}
-          className="bg-coral hover:bg-coral-dark text-navy font-bold text-lg px-12 py-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2, duration: 0.8 }}
+          className="w-full"
         >
-          {t.startAnalysis}
-        </Button>
+          <Button
+            onClick={() => setCurrentPage('reminder')}
+            className="w-full bg-coral hover:bg-coral-dark text-navy font-black text-xl py-8 rounded-2xl shadow-2xl shadow-coral/20 transition-all duration-300 group overflow-hidden relative"
+          >
+            <motion.div
+              className="absolute inset-0 bg-white/20 translate-x-[-100%]"
+              whileHover={{ translateX: '100%' }}
+              transition={{ duration: 0.6 }}
+            />
+            <span className="flex items-center gap-3 relative z-10">
+              {t.startAnalysis}
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            </span>
+          </Button>
+          <div className="mt-6 flex justify-center gap-4 text-white/30">
+            <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-widest">
+              <Sparkles className="w-3 h-3 text-coral" />
+              AI Powered
+            </div>
+            <div className="w-px h-3 bg-white/10" />
+            <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-widest">
+              <Sparkles className="w-3 h-3 text-coral" />
+              Teen Safe
+            </div>
+          </div>
+        </motion.div>
       </div>
 
       {/* Footer */}
-      <div className="absolute bottom-6 text-white/40 text-sm">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+        className="absolute bottom-6 text-white/20 text-[10px] font-bold uppercase tracking-widest"
+      >
         Skin Smart Design 2026
-      </div>
+      </motion.div>
     </div>
   );
 }

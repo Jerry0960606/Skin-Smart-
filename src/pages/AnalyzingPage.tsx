@@ -4,7 +4,7 @@ import { translations } from '@/i18n/translations';
 import { searchProductByBarcode, searchProductsByIngredients, analyzeIngredientList, type Product } from '@/data/products';
 
 export default function AnalyzingPage() {
-  const { language, setCurrentPage, skinType, currentProduct, addToHistory, setCurrentResult } = useAppStore();
+  const { language, setCurrentPage, skinType, currentProduct, addToHistory, setCurrentResult, blacklist } = useAppStore();
   const t = translations[language];
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
@@ -76,12 +76,29 @@ export default function AnalyzingPage() {
         if (skinType === 'dry' && hasAlcohol) {
           result = result === 'green' ? 'yellow' : 'red';
         }
+
+        // Adjust for Personal Blacklist
+        const hasBlacklisted = foundProduct.ingredients.some(ing =>
+          blacklist.some(b => ing.toLowerCase().includes(b.toLowerCase()))
+        );
+        if (hasBlacklisted) {
+          result = 'red'; // Blacklisted items always trigger red for safety
+        }
       } else if (currentProduct && !/^\d+$/.test(currentProduct) && currentProduct.includes(',')) {
         // Manual ingredient list analysis
         const ingredientList = currentProduct.split(/[平衡,，、\n]+/).map(i => i.trim()).filter(i => i.length > 0);
         const analysisResult = analyzeIngredientList(ingredientList, language);
 
         result = analysisResult.result;
+
+        // Adjust for Personal Blacklist in manual analysis
+        const hasBlacklisted = ingredientList.some(ing =>
+          blacklist.some(b => ing.toLowerCase().includes(b.toLowerCase()))
+        );
+        if (hasBlacklisted) {
+          result = 'red';
+        }
+
         const safetyScore = analysisResult.safetyScore;
 
         // Final score for history
@@ -95,6 +112,7 @@ export default function AnalyzingPage() {
           skinType: skinType || 'normal',
           safetyScore: finalSafetyScore,
           matchScore: finalMatchScore,
+          ingredients: ingredientList,
         });
 
         // Skip to end of effect
@@ -106,18 +124,40 @@ export default function AnalyzingPage() {
         // No product found and not a clear list - random result for demo
         const results: Array<'green' | 'yellow' | 'red'> = ['green', 'yellow', 'red'];
         result = results[Math.floor(Math.random() * results.length)];
+        const ingredientList = currentProduct ? currentProduct.split(/[平衡,，、\n]+/).map(i => i.trim()).filter(i => i.length > 0) : [];
+
+        setCurrentResult(result);
+
+        // Add to history
+        addToHistory({
+          productName: foundProduct ? (foundProduct as any).name[language] : (currentProduct || 'Unknown Product'),
+          result: result,
+          skinType: skinType || 'normal',
+          safetyScore: foundProduct ? (foundProduct as any).safetyScore : 75,
+          matchScore: result === 'green' ? 88 : result === 'yellow' ? 65 : 35,
+          ingredients: ingredientList,
+        });
+
+        // Navigate to result page after short delay
+        setTimeout(() => {
+          setCurrentPage('result');
+        }, 500);
+        return;
       }
 
       setCurrentResult(result);
 
       // Add to history
-      addToHistory({
-        productName: foundProduct?.name[language] || currentProduct || 'Unknown Product',
-        result: result,
-        skinType: skinType || 'normal',
-        safetyScore: foundProduct?.safetyScore || 75,
-        matchScore: result === 'green' ? 88 : result === 'yellow' ? 65 : 35,
-      });
+      if (foundProduct) {
+        addToHistory({
+          productName: foundProduct.name[language],
+          result: result,
+          skinType: skinType || 'normal',
+          safetyScore: foundProduct.safetyScore,
+          matchScore: result === 'green' ? 88 : result === 'yellow' ? 65 : 35,
+          ingredients: foundProduct.ingredients,
+        });
+      }
 
       // Navigate to result page after short delay
       setTimeout(() => {

@@ -13,8 +13,11 @@ export default function ScanPage() {
   const [showCamera, setShowCamera] = useState(false);
   const [showTimeoutPrompt, setShowTimeoutPrompt] = useState(false);
   const [inputType, setInputType] = useState<'barcode' | 'ingredients'>('barcode');
+  const [isOCRProcessing, setIsOCRProcessing] = useState(false);
+  const [ocrProgress, setOcrProgress] = useState(0);
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const scanTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -100,12 +103,57 @@ export default function ScanPage() {
     }
   };
 
-  const captureIngredients = () => {
-    // Simulate taking a photo for ingredients
-    stopCamera();
-    setShowCamera(false);
-    setCurrentProduct('Mock Product Analysis');
-    setCurrentPage('analyzing');
+  const captureIngredients = async () => {
+    if (!videoRef.current || !canvasRef.current) return;
+
+    setIsOCRProcessing(true);
+    setOcrProgress(0);
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+
+    if (!context) return;
+
+    // Set canvas dimensions to match video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // Draw video frame to canvas
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Stop camera as soon as frame is captured
+    await stopCamera();
+
+    try {
+      const { createWorker } = await import('tesseract.js');
+      const worker = await createWorker('eng+chi_tra', 1, {
+        logger: m => {
+          if (m.status === 'recognizing text') {
+            setOcrProgress(Math.round(m.progress * 100));
+          }
+        }
+      });
+
+      const { data: { text } } = await worker.recognize(canvas.toDataURL('image/jpeg'));
+      await worker.terminate();
+
+      // Clean up text: replace newlines with commas to simulate a list
+      const cleanedText = text
+        .replace(/\n/g, ', ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      setShowCamera(false);
+      setIsOCRProcessing(false);
+      setCurrentProduct(cleanedText);
+      setCurrentPage('analyzing');
+    } catch (err) {
+      console.error('OCR Error:', err);
+      setIsOCRProcessing(false);
+      setShowCamera(false);
+      // Fallback or error state
+    }
   };
 
   const handleBack = () => {
@@ -262,7 +310,10 @@ export default function ScanPage() {
           /* Camera view */
           <div className="w-full max-w-md">
             <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-black" id="reader">
-              {/* Video feed (only used for ingredients OCR mock) */}
+              {/* Hidden canvas for OCR frame capture */}
+              <canvas ref={canvasRef} className="hidden" />
+
+              {/* Video feed (only used for ingredients OCR mode) */}
               {inputType === 'ingredients' && (
                 <video
                   ref={videoRef}
@@ -271,6 +322,41 @@ export default function ScanPage() {
                   muted
                   className="absolute inset-0 w-full h-full object-cover"
                 />
+              )}
+
+              {/* OCR Processing Overlay */}
+              {isOCRProcessing && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-navy/90 backdrop-blur-md z-30">
+                  <div className="relative w-24 h-24 mb-6">
+                    <svg className="w-full h-full" viewBox="0 0 100 100">
+                      <circle
+                        cx="50" cy="50" r="45"
+                        fill="none"
+                        stroke="rgba(255,255,255,0.1)"
+                        strokeWidth="8"
+                      />
+                      <circle
+                        cx="50" cy="50" r="45"
+                        fill="none"
+                        stroke="#e8927c"
+                        strokeWidth="8"
+                        strokeDasharray={2 * Math.PI * 45}
+                        strokeDashoffset={2 * Math.PI * 45 * (1 - ocrProgress / 100)}
+                        strokeLinecap="round"
+                        className="transition-all duration-300"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">{ocrProgress}%</span>
+                    </div>
+                  </div>
+                  <p className="text-white font-medium text-lg animate-pulse">
+                    {language === 'zh-TW' ? '正在辨識成分...' : language === 'en' ? 'Recognizing ingredients...' : '成分を認識しています...'}
+                  </p>
+                  <p className="text-white/50 text-sm mt-2 font-mono">
+                    Tesseract OCR Active
+                  </p>
+                </div>
               )}
 
               {/* Fallback mock camera view */}
@@ -358,3 +444,4 @@ export default function ScanPage() {
     </div>
   );
 }
+

@@ -13,6 +13,8 @@ import HistoryPage from '@/pages/HistoryPage';
 import HelpPage from '@/pages/HelpPage';
 import AboutPage from '@/pages/AboutPage';
 import SettingsPage from '@/pages/SettingsPage';
+import ComparisonPage from '@/pages/ComparisonPage';
+import IngredientWikiPage from '@/pages/IngredientWikiPage';
 import Menu from '@/components/Menu';
 import { Toaster } from '@/components/ui/sonner';
 import { Menu as MenuIcon } from 'lucide-react';
@@ -50,6 +52,10 @@ function App() {
         return <AboutPage />;
       case 'settings':
         return <SettingsPage />;
+      case 'comparison':
+        return <ComparisonPage />;
+      case 'wiki':
+        return <IngredientWikiPage />;
       default:
         return <CoverPage />;
     }

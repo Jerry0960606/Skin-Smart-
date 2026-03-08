@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { translations } from '@/i18n/translations';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, CheckCircle, AlertCircle, XCircle, Info } from 'lucide-react';
+import { ChevronLeft, CheckCircle, AlertCircle, XCircle, Info, ChevronRight } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { searchProductByBarcode, searchProductsByIngredients, getIngredientSafety } from '@/data/products';
 
 export default function ReportPage() {
-  const { language, setCurrentPage, scanHistory, currentProduct } = useAppStore();
+  const { language, setCurrentPage, scanHistory, currentProduct, blacklist } = useAppStore();
   const t = translations[language];
   const [isVisible, setIsVisible] = useState(false);
   const [foundProduct, setFoundProduct] = useState<any>(null);
@@ -134,6 +134,16 @@ export default function ReportPage() {
       }[language]);
     }
 
+    // Add Personal Blacklist warnings
+    const ingredients = foundProduct ? foundProduct.ingredients : (latestRecord?.ingredients || []);
+    const matchedBlacklist = ingredients.filter((ing: string) =>
+      blacklist.some(b => ing.toLowerCase().includes(b.toLowerCase()))
+    );
+
+    matchedBlacklist.forEach((ing: string) => {
+      warnings.push(t.blacklistWarning.replace('{name}', ing));
+    });
+
     return warnings;
   };
 
@@ -257,8 +267,8 @@ export default function ReportPage() {
                 )}
                 <div className="flex gap-3">
                   <span className={`px-3 py-1 rounded-full text-sm font-semibold ${result === 'green' ? 'bg-emerald-500/30 text-emerald-400' :
-                      result === 'yellow' ? 'bg-amber-500/30 text-amber-400' :
-                        'bg-rose-500/30 text-rose-400'
+                    result === 'yellow' ? 'bg-amber-500/30 text-amber-400' :
+                      'bg-rose-500/30 text-rose-400'
                     }`}>
                     {result === 'green' ? t.resultGreen : result === 'yellow' ? t.resultYellow : t.resultRed}
                   </span>
@@ -348,16 +358,23 @@ export default function ReportPage() {
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-6">
               <h3 className="text-lg font-bold text-white mb-4">{t.ingredients}</h3>
               <div className="space-y-3">
-                {ingredientAnalysis.slice(0, 6).map((ingredient: any, index: number) => (
-                  <div key={index} className="flex items-start gap-3 p-3 bg-white/5 rounded-xl">
+                {ingredientAnalysis.slice(0, 10).map((ingredient: any, index: number) => (
+                  <button
+                    key={index}
+                    className="flex items-start gap-3 p-3 bg-white/5 rounded-xl w-full text-left hover:bg-white/10 transition-colors"
+                    onClick={() => setCurrentPage('wiki')}
+                  >
                     {getSafetyIcon(ingredient.safety)}
                     <div className="flex-1">
-                      <p className={`font-semibold ${getSafetyColor(ingredient.safety)}`}>
-                        {ingredient.name}
-                      </p>
+                      <div className="flex items-center justify-between">
+                        <p className={`font-semibold ${getSafetyColor(ingredient.safety)}`}>
+                          {ingredient.name}
+                        </p>
+                        <ChevronRight className="w-4 h-4 text-white/20" />
+                      </div>
                       <p className="text-white/60 text-sm">{ingredient.description}</p>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </div>

@@ -1,15 +1,24 @@
 import { useState } from 'react';
 import { useAppStore } from '@/store/appStore';
-import { ChevronLeft, Trash2, RefreshCcw, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, Trash2, RefreshCcw, AlertTriangle, Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { translations } from '@/i18n/translations';
 import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
 
 export default function SettingsPage() {
-    const { language, setCurrentPage, clearHistory, resetQuiz } = useAppStore();
+    const { language, setCurrentPage, clearHistory, resetQuiz, blacklist, addToBlacklist, removeFromBlacklist } = useAppStore();
     const t = translations[language];
     const [showConfirmClear, setShowConfirmClear] = useState(false);
     const [showConfirmReset, setShowConfirmReset] = useState(false);
+    const [newIngredient, setNewIngredient] = useState('');
+
+    const handleAddIngredient = () => {
+        if (!newIngredient.trim()) return;
+        addToBlacklist(newIngredient.trim());
+        setNewIngredient('');
+        toast.success(language === 'zh-TW' ? '已加入黑名單' : language === 'en' ? 'Added to blacklist' : 'ブラックリストに追加されました');
+    };
 
     const handleClearHistory = () => {
         clearHistory();
@@ -115,6 +124,57 @@ export default function SettingsPage() {
                             </div>
                         </div>
 
+                    </div>
+                </div>
+
+                {/* Personal Blacklist Section */}
+                <div>
+                    <h2 className="text-coral text-sm font-bold uppercase tracking-wider mb-4 px-2">
+                        {t.blacklistTitle}
+                    </h2>
+                    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-6">
+                        <p className="text-white/50 text-xs">
+                            {t.blacklistDesc}
+                        </p>
+
+                        <div className="flex gap-2">
+                            <Input
+                                value={newIngredient}
+                                onChange={(e) => setNewIngredient(e.target.value)}
+                                placeholder={t.ingredientPlaceholder}
+                                className="bg-white/5 border-white/10 text-white placeholder:text-white/20"
+                                onKeyDown={(e) => e.key === 'Enter' && handleAddIngredient()}
+                            />
+                            <Button
+                                onClick={handleAddIngredient}
+                                className="bg-coral hover:bg-coral-dark text-navy font-bold shrink-0"
+                            >
+                                <Plus className="w-5 h-5" />
+                            </Button>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2 pt-2">
+                            {blacklist.length > 0 ? (
+                                blacklist.map((ing) => (
+                                    <div
+                                        key={ing}
+                                        className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full border border-white/10 group transition-all hover:bg-white/20"
+                                    >
+                                        <span className="text-white text-sm">{ing}</span>
+                                        <button
+                                            onClick={() => removeFromBlacklist(ing)}
+                                            className="text-white/40 hover:text-rose-400 p-0.5 rounded-full hover:bg-rose-400/20 transition-colors"
+                                        >
+                                            <X className="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-white/20 text-sm italic w-full text-center py-4">
+                                    {t.blacklistEmpty}
+                                </p>
+                            )}
+                        </div>
                     </div>
                 </div>
 

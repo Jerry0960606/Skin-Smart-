@@ -1,6 +1,6 @@
 import { useAppStore } from '@/store/appStore';
 import { translations } from '@/i18n/translations';
-import { X, Home, History, Settings, HelpCircle, Info, Globe, ChevronRight, LogIn, LogOut } from 'lucide-react';
+import { X, Home, History, Settings, HelpCircle, Info, Globe, ChevronRight, LogIn, LogOut, Book } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -27,15 +27,16 @@ export default function Menu() {
   } = useAppStore();
   const t = translations[language];
 
-  const menuItems = [
+  const menuItems: Array<{ icon: any, label: string, page: 'cover' | 'history' | 'settings' | 'help' | 'about' | 'wiki' }> = [
     { icon: Home, label: t.home, page: 'cover' },
     { icon: History, label: t.history, page: 'history' },
+    { icon: Book, label: t.wikiTitle, page: 'wiki' },
     { icon: Settings, label: t.settings, page: 'settings' },
     { icon: HelpCircle, label: t.help, page: 'help' },
     { icon: Info, label: t.about, page: 'about' },
   ];
 
-  const handlePageChange = (page: string) => {
+  const handlePageChange = (page: 'cover' | 'history' | 'settings' | 'help' | 'about' | 'wiki') => {
     setCurrentPage(page);
     setMenuOpen(false);
   };

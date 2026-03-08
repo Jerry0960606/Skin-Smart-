@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { translations } from '@/i18n/translations';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, Trash2, Calendar, CheckCircle, AlertTriangle, XCircle, Lock } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Dialog,
   DialogContent,
@@ -16,16 +17,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import HistoryAnalytics from '@/components/HistoryAnalytics';
 
 export default function HistoryPage() {
-  const { language, setCurrentPage, scanHistory, deleteFromHistory, clearHistory, isAuthenticated } = useAppStore();
+  const {
+    language, setCurrentPage, scanHistory, deleteFromHistory, clearHistory,
+    isAuthenticated, selectedComparisonIds, toggleComparisonSelection, clearComparisonSelection
+  } = useAppStore();
   const t = translations[language];
-  const [isVisible, setIsVisible] = useState(false);
   const [deleteId, setDeleteId] = useState<string>('');
   const [showClearDialog, setShowClearDialog] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -85,9 +83,12 @@ export default function HistoryPage() {
       </div>
 
       {/* Header */}
-      <div className="relative z-10 flex items-center justify-between px-6 py-6">
+      <div className="relative z-10 flex items-center justify-between px-6 py-6 border-b border-white/5 bg-navy/20 backdrop-blur-sm">
         <button
-          onClick={() => setCurrentPage('cover')}
+          onClick={() => {
+            clearComparisonSelection();
+            setCurrentPage('cover');
+          }}
           className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
         >
           <ChevronLeft className="w-6 h-6 text-white" />
@@ -107,7 +108,7 @@ export default function HistoryPage() {
 
       {/* Main content */}
       <ScrollArea className="flex-1 px-6">
-        <div className={`pb-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className="pb-32 pt-6">
           {!isAuthenticated ? (
             // Unauthenticated state
             <div className="flex flex-col items-center justify-center py-20 mt-10">
@@ -152,79 +153,98 @@ export default function HistoryPage() {
                 <Tabs defaultValue="list" className="w-full">
                   <TabsList className="w-full grid grid-cols-2 bg-white/5 border border-white/10 rounded-xl mb-6 p-1">
                     <TabsTrigger value="list" className="rounded-lg data-[state=active]:bg-coral data-[state=active]:text-navy text-white/70">
-                      {t.historyList || 'History List'}
+                      {t.historyList}
                     </TabsTrigger>
                     <TabsTrigger value="analytics" className="rounded-lg data-[state=active]:bg-coral data-[state=active]:text-navy text-white/70">
-                      {t.historyAnalysis || 'Cross Analysis'}
+                      {t.historyAnalysis}
                     </TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="list" className="mt-0">
                     <div className="space-y-4">
-                      {scanHistory.map((record) => (
-                        <div
-                          key={record.id}
-                          className={`relative p-4 rounded-2xl border ${getResultColor(record.result)} transition-all duration-300 hover:scale-[1.02]`}
-                        >
-                          <div className="flex items-start gap-4">
-                            {/* Result icon */}
-                            <div className="flex-shrink-0">
-                              {getResultIcon(record.result)}
-                            </div>
-
-                            {/* Content */}
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-bold text-white truncate">
-                                  {record.productName}
-                                </h3>
-                                <span className={`text-xs px-2 py-0.5 rounded-full ${record.result === 'green' ? 'bg-emerald-500/30 text-emerald-400' :
-                                  record.result === 'yellow' ? 'bg-amber-500/30 text-amber-400' :
-                                    'bg-rose-500/30 text-rose-400'
-                                  }`}>
-                                  {getResultText(record.result)}
-                                </span>
+                      <motion.div
+                        layout
+                        className="space-y-4"
+                      >
+                        {scanHistory.map((record, idx) => (
+                          <motion.div
+                            key={record.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.05 }}
+                            onClick={() => toggleComparisonSelection(record.id)}
+                            className={`relative p-4 rounded-2xl border cursor-pointer transition-all duration-300 ${selectedComparisonIds.includes(record.id)
+                              ? 'border-coral bg-coral/20 scale-[1.02] shadow-lg shadow-coral/10'
+                              : getResultColor(record.result) + ' hover:bg-white/5'}
+                          `}
+                          >
+                            {/* ... rest of content same ... */}
+                            <div className="flex items-start gap-4">
+                              {/* Selection Checkbox */}
+                              <div className={`mt-1 flex-shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${selectedComparisonIds.includes(record.id)
+                                ? 'border-coral bg-coral'
+                                : 'border-white/20'
+                                }`}>
+                                {selectedComparisonIds.includes(record.id) && <CheckCircle className="w-4 h-4 text-navy" />}
                               </div>
 
-                              <div className="flex items-center gap-4 text-sm text-white/60">
-                                <span className="flex items-center gap-1">
-                                  <Calendar className="w-4 h-4" />
-                                  {formatDate(record.date)}
-                                </span>
-                              </div>
-
-                              <div className="flex gap-4 mt-3">
-                                <div className="text-sm">
-                                  <span className="text-white/50">{t.safetyScore}: </span>
-                                  <span className={`font-semibold ${record.result === 'green' ? 'text-emerald-400' :
-                                    record.result === 'yellow' ? 'text-amber-400' :
-                                      'text-rose-400'
+                              {/* Content */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h3 className="font-bold text-white truncate">
+                                    {record.productName}
+                                  </h3>
+                                  <span className={`text-xs px-2 py-0.5 rounded-full ${record.result === 'green' ? 'bg-emerald-500/30 text-emerald-400' :
+                                    record.result === 'yellow' ? 'bg-amber-500/30 text-amber-400' :
+                                      'bg-rose-500/30 text-rose-400'
                                     }`}>
-                                    {record.safetyScore}%
+                                    {getResultText(record.result)}
                                   </span>
                                 </div>
-                                <div className="text-sm">
-                                  <span className="text-white/50">{t.matchScore}: </span>
-                                  <span className={`font-semibold ${record.result === 'green' ? 'text-emerald-400' :
-                                    record.result === 'yellow' ? 'text-amber-400' :
-                                      'text-rose-400'
-                                    }`}>
-                                    {record.matchScore}%
+
+                                <div className="flex items-center gap-4 text-sm text-white/60">
+                                  <span className="flex items-center gap-1">
+                                    <Calendar className="w-4 h-4" />
+                                    {formatDate(record.date)}
                                   </span>
                                 </div>
-                              </div>
-                            </div>
 
-                            {/* Delete button */}
-                            <button
-                              onClick={() => setDeleteId(record.id)}
-                              className="p-2 rounded-full bg-white/10 hover:bg-rose-500/30 transition-colors flex-shrink-0"
-                            >
-                              <Trash2 className="w-4 h-4 text-white/60" />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                                <div className="flex gap-4 mt-3">
+                                  <div className="text-sm">
+                                    <span className="text-white/50">{t.safetyScore}: </span>
+                                    <span className={`font-semibold ${record.result === 'green' ? 'text-emerald-400' :
+                                      record.result === 'yellow' ? 'text-amber-400' :
+                                        'text-rose-400'
+                                      }`}>
+                                      {record.safetyScore}%
+                                    </span>
+                                  </div>
+                                  <div className="text-sm">
+                                    <span className="text-white/50">{t.matchScore}: </span>
+                                    <span className={`font-semibold ${record.result === 'green' ? 'text-emerald-400' :
+                                      record.result === 'yellow' ? 'text-amber-400' :
+                                        'text-rose-400'
+                                      }`}>
+                                      {record.matchScore}%
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Delete button */}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDeleteId(record.id);
+                                }}
+                                className="p-2 rounded-full bg-white/10 hover:bg-rose-500/30 transition-colors flex-shrink-0"
+                              >
+                                <Trash2 className="w-4 h-4 text-white/60" />
+                              </button>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </motion.div>
                     </div>
                   </TabsContent>
 
@@ -304,6 +324,45 @@ export default function HistoryPage() {
           )}
         </div>
       </ScrollArea>
+
+      {/* Comparison Floating Bar */}
+      <AnimatePresence>
+        {selectedComparisonIds.length > 0 && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            className="fixed bottom-0 left-0 right-0 p-6 z-40 bg-navy/80 backdrop-blur-lg border-t border-white/10"
+          >
+            <div className="max-w-2xl mx-auto flex items-center justify-between gap-4">
+              <div className="flex flex-col">
+                <span className="text-white font-bold">
+                  {t.compareSelection.replace('{count}', selectedComparisonIds.length.toString())}
+                </span>
+                <span className="text-white/40 text-xs">
+                  {selectedComparisonIds.length < 2 ? t.compareLimit : 'Ready to compare'}
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  onClick={clearComparisonSelection}
+                  className="text-white/60 hover:text-white"
+                >
+                  {t.clearSelection}
+                </Button>
+                <Button
+                  disabled={selectedComparisonIds.length < 2}
+                  onClick={() => setCurrentPage('comparison')}
+                  className="bg-coral hover:bg-coral-dark text-navy font-black px-6 py-4 rounded-xl shadow-lg shadow-coral/20 disabled:opacity-50"
+                >
+                  {t.startComparison}
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Delete confirmation dialog */}
       <Dialog open={!!deleteId} onOpenChange={() => setDeleteId('')}>
