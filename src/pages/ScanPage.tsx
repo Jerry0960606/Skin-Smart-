@@ -93,7 +93,10 @@ export default function ScanPage() {
     };
   }, [showCamera, inputType]);
 
-  const startScan = (mode: 'barcode' | 'ingredients') => {
+  const startScan = async (mode: 'barcode' | 'ingredients') => {
+    // Stop any existing camera first
+    await stopCamera();
+
     setInputType(mode);
     setShowCamera(true);
     setShowTimeoutPrompt(false);
@@ -247,7 +250,7 @@ export default function ScanPage() {
       </div>
 
       {/* Main content */}
-      <div className={`relative z-10 flex-1 flex flex-col items-center justify-start sm:justify-center overflow-y-auto scrollbar-hide transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div className={`relative z-10 flex-1 flex flex-col items-center justify-start sm:justify-center overflow-y-auto scrollbar-hide transition-all duration-700 min-h-0 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         {!showCamera ? (
           <div className="w-full flex flex-col items-center py-4">
             {/* Title */}
@@ -325,17 +328,22 @@ export default function ScanPage() {
             </Tabs>
 
             {/* Hint */}
-            <p className="text-white/40 text-sm text-center mb-4">
+            <p className="text-white/40 text-sm text-center mb-4 shrink-0">
               <Camera className="w-4 h-4 inline mr-1" />
               {t.scanHint}
             </p>
           </div>
         ) : (
           /* Camera view */
-          <div className="w-full max-w-md">
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-black" id="reader">
+          <div key={inputType} className="w-full max-w-md flex flex-col">
+            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-black shadow-2xl">
               {/* Hidden canvas for OCR frame capture */}
               <canvas ref={canvasRef} className="hidden" />
+
+              {/* Barcode Scanner Container */}
+              {inputType === 'barcode' && (
+                <div id="reader" className="absolute inset-0 w-full h-full" />
+              )}
 
               {/* Video feed (only used for ingredients OCR mode) */}
               {inputType === 'ingredients' && (

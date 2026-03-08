@@ -45,9 +45,9 @@ export default function Menu() {
     <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
       <SheetContent
         side="right"
-        className="w-[300px] bg-navy border-l border-white/10 p-0"
+        className="w-[300px] bg-navy border-l border-white/10 p-0 flex flex-col h-full"
       >
-        <SheetHeader className="p-6 border-b border-white/10">
+        <SheetHeader className="p-6 border-b border-white/10 shrink-0">
           <SheetTitle className="text-white flex items-center justify-between">
             <span>{t.menu}</span>
             <button
@@ -59,7 +59,8 @@ export default function Menu() {
           </SheetTitle>
         </SheetHeader>
 
-        <div className="p-6">
+        {/* Scrollable area */}
+        <div className="flex-1 overflow-y-auto scrollbar-hide p-6">
           {/* Language selector */}
           <div className="mb-8">
             <label className="text-white/60 text-sm mb-2 block flex items-center gap-2">
@@ -85,7 +86,7 @@ export default function Menu() {
           </div>
 
           {/* Menu items */}
-          <nav className="space-y-2">
+          <nav className="space-y-2 mb-8">
             {menuItems.map((item) => (
               <button
                 key={item.page}
@@ -102,7 +103,7 @@ export default function Menu() {
           </nav>
 
           {/* Auth Button */}
-          <div className="mt-4 pt-4 border-t border-white/10">
+          <div className="pt-4 border-t border-white/10">
             {isAuthenticated ? (
               <button
                 onClick={() => {
@@ -139,8 +140,8 @@ export default function Menu() {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-white/10">
+        {/* Footer - standard flex item */}
+        <div className="p-6 border-t border-white/10 shrink-0">
           <div className="flex items-center gap-3">
             <img
               src="/images/Iconic Character.png"
