@@ -112,7 +112,7 @@ export default function FaceClickQuestion({ onAnswer }: FaceClickQuestionProps) 
         onClick={handleImageClick}
       >
         <img
-          src="/images/豆豆.png"
+          src="/images/豆豆 version 2.png"
           alt="Face"
           className="w-full h-auto rounded-3xl"
           draggable={false}
