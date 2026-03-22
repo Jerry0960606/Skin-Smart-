@@ -2255,12 +2255,50 @@ export function getIngredientSafety(ingredient: string, language: 'zh-TW' | 'en'
 }
 
 // Analyze a list of ingredients and return scores + analysis
-export function analyzeIngredientList(ingredients: string[], language: 'zh-TW' | 'en' | 'ja') {
+export function analyzeIngredientList(ingredients: string[], language: 'zh-TW' | 'en' | 'ja', skinType: string | null = 'normal') {
   let safetyScore = 100;
+  let matchScore = 80; // Baseline match
+  
+  const warnings: string[] = [];
+  const benefits: string[] = [];
+
   const analysis = ingredients.map(ing => {
     const info = getIngredientSafety(ing, language);
-    if (info.safety === 'warning') safetyScore -= 15;
-    if (info.safety === 'caution') safetyScore -= 5;
+    if (info.safety === 'warning') {
+      safetyScore -= 15;
+      warnings.push(ing);
+    }
+    if (info.safety === 'caution') {
+      safetyScore -= 5;
+      warnings.push(ing);
+    }
+    
+    // Simple benefit detection
+    const lowerIng = ing.toLowerCase();
+    if (lowerIng.includes('hyaluronic') || lowerIng.includes('glycerin') || lowerIng.includes('panthenol')) {
+      if (skinType === 'dry' || skinType === 'sensitive') {
+        matchScore += 3;
+        benefits.push(ing);
+      }
+    }
+    if (lowerIng.includes('salicylic') || lowerIng.includes('tea tree') || lowerIng.includes('zinc')) {
+      if (skinType === 'oily' || skinType === 'combination') {
+        matchScore += 3;
+        benefits.push(ing);
+      }
+    }
+    if (lowerIng.includes('centella') || lowerIng.includes('madecassoside') || lowerIng.includes('allantoin')) {
+      if (skinType === 'sensitive') {
+        matchScore += 4;
+        benefits.push(ing);
+      }
+    }
+    if (lowerIng.includes('alcohol') || lowerIng.includes('fragrance')) {
+      if (skinType === 'sensitive' || skinType === 'dry') {
+        matchScore -= 10;
+      }
+    }
+
     return {
       name: ing,
       safety: info.safety,
@@ -2268,18 +2306,67 @@ export function analyzeIngredientList(ingredients: string[], language: 'zh-TW' |
     };
   });
 
-  // Clamp safety score
+  // Clamp scores
   safetyScore = Math.max(0, Math.min(100, safetyScore));
+  matchScore = Math.max(0, Math.min(100, matchScore));
 
   let result: 'green' | 'yellow' | 'red' = 'green';
-  if (safetyScore >= 85) result = 'green';
-  else if (safetyScore >= 70) result = 'yellow';
+  if (safetyScore >= 85 && matchScore >= 70) result = 'green';
+  else if (safetyScore >= 70 && matchScore >= 50) result = 'yellow';
   else result = 'red';
+
+  // Generate localized explanations
+  const getExplanations = () => {
+    if (language === 'zh-TW') {
+      const safetyExpl = warnings.length > 0 
+        ? `含有 ${warnings.slice(0, 2).join('、')}${warnings.length > 2 ? '等' : ''} 需要注意的成分，建議謹慎使用。`
+        : '成分組成非常純淨安全，適合長期使用。';
+      
+      let matchExpl = '';
+      if (benefits.length > 0) {
+        matchExpl = `含有 ${benefits.slice(0, 2).join('、')}，對您的 ${skinType === 'dry' ? '乾性' : skinType === 'oily' ? '油性' : skinType === 'sensitive' ? '敏感' : '肌膚'} 有良好的保養效果。`;
+      } else {
+        matchExpl = '基礎保養成分充足，能提供基本的肌膚護理。';
+      }
+      if (matchScore < 60) matchExpl = '部分成分可能與您的膚質不符，建議先小面積測試。';
+      
+      return { safetyExpl, matchExpl };
+    } else if (language === 'en') {
+      const safetyExpl = warnings.length > 0 
+        ? `Contains ingredients like ${warnings.slice(0, 2).join(', ')} that require caution.`
+        : 'Very clean and safe ingredients, suitable for long-term use.';
+      
+      let matchExpl = benefits.length > 0
+        ? `Contains ${benefits.slice(0, 2).join(', ')}, which are beneficial for your ${skinType} skin.`
+        : 'Contains standard ingredients for basic skin care.';
+      
+      if (matchScore < 60) matchExpl = 'Some ingredients may not match your skin type well.';
+      
+      return { safetyExpl, matchExpl };
+    } else {
+      const safetyExpl = warnings.length > 0 
+        ? `${warnings.slice(0, 2).join('、')}などの注意が必要な成分が含まれています。`
+        : '非常に安全な成分構成で、長期的な使用に適しています。';
+      
+      let matchExpl = benefits.length > 0
+        ? `${benefits.slice(0, 2).join('、')}が含まれており、あなたの${skinType}肌に良い効果が期待できます。`
+        : '標準的な成分が含まれており、基本的なスキンケアを提供します。';
+      
+      if (matchScore < 60) matchExpl = '一部の成分があなたの肌タイプに合わない可能性があります。';
+      
+      return { safetyExpl, matchExpl };
+    }
+  };
+
+  const { safetyExpl, matchExpl } = getExplanations();
 
   return {
     safetyScore,
+    matchScore,
     result,
-    analysis
+    analysis,
+    safetyExplanation: safetyExpl,
+    matchExplanation: matchExpl
   };
 }
 

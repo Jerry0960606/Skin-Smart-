@@ -209,9 +209,9 @@ export default function ReportPage() {
 
           {/* Scores */}
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center flex flex-col items-center">
               <p className="text-white/60 text-sm mb-2">{t.safetyScore}</p>
-              <div className="relative w-24 h-24 mx-auto">
+              <div className="relative w-24 h-24 mb-3">
                 <svg className="w-full h-full transform -rotate-90">
                   <circle
                     cx="48"
@@ -239,10 +239,15 @@ export default function ReportPage() {
                   </span>
                 </div>
               </div>
+              {latestRecord?.safetyExplanation && (
+                <p className="text-white/80 text-xs leading-relaxed mt-auto border-t border-white/5 pt-2">
+                  {latestRecord.safetyExplanation}
+                </p>
+              )}
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center flex flex-col items-center">
               <p className="text-white/60 text-sm mb-2">{t.matchScore}</p>
-              <div className="relative w-24 h-24 mx-auto">
+              <div className="relative w-24 h-24 mb-3">
                 <svg className="w-full h-full transform -rotate-90">
                   <circle
                     cx="48"
@@ -270,6 +275,11 @@ export default function ReportPage() {
                   </span>
                 </div>
               </div>
+              {latestRecord?.matchExplanation && (
+                <p className="text-white/80 text-xs leading-relaxed mt-auto border-t border-white/5 pt-2">
+                  {latestRecord.matchExplanation}
+                </p>
+              )}
             </div>
           </div>
 

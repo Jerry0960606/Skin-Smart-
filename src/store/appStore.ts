@@ -21,6 +21,8 @@ export interface ScanRecord {
   matchScore: number;
   imageUrl?: string;
   ingredients: string[];
+  safetyExplanation?: string;
+  matchExplanation?: string;
 }
 
 interface AppState {
@@ -157,8 +159,6 @@ export const useAppStore = create<AppState>()(
       // History
       scanHistory: [],
       addToHistory: (record) => {
-        if (!get().isAuthenticated) return;
-
         const newRecord: ScanRecord = {
           ...record,
           id: Date.now().toString(),
