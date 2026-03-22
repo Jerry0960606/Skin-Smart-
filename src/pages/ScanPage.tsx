@@ -142,12 +142,25 @@ export default function ScanPage() {
 
     if (!context) return;
 
-    // Set canvas dimensions to match video
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    // Set canvas dimensions to a focused center area (70% of Original)
+    const cropWidth = Math.floor(video.videoWidth * 0.8);
+    const cropHeight = Math.floor(video.videoHeight * 0.8);
+    const startX = Math.floor((video.videoWidth - cropWidth) / 2);
+    const startY = Math.floor((video.videoHeight - cropHeight) / 1.5); // Slightly higher than center
 
-    // Draw video frame to canvas
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.width = cropWidth;
+    canvas.height = cropHeight;
+
+    // Apply filters for better OCR visibility
+    // Grayscale + Contrast + Sharpen effect via brightness/contrast
+    context.filter = 'grayscale(100%) contrast(1.5) brightness(1.1)';
+
+    // Draw cropped video frame to canvas
+    context.drawImage(
+      video,
+      startX, startY, cropWidth, cropHeight, // Source
+      0, 0, cropWidth, cropHeight           // Destination
+    );
 
     // Stop camera as soon as frame is captured
     await stopCamera();
@@ -162,7 +175,13 @@ export default function ScanPage() {
         }
       });
 
-      const { data: { text } } = await worker.recognize(canvas.toDataURL('image/jpeg'));
+      // Set parameters for better recognition
+      await worker.setParameters({
+        tessedit_pageseg_mode: '3' as any, // PSM.AUTO
+        preserve_interword_spaces: '1',
+      });
+
+      const { data: { text } } = await worker.recognize(canvas.toDataURL('image/jpeg', 0.95));
       await worker.terminate();
 
       // Clean up text: replace newlines with commas to simulate a list
