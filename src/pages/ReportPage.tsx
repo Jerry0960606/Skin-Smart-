@@ -2,8 +2,16 @@ import { useEffect, useState } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { translations } from '@/i18n/translations';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, CheckCircle, AlertCircle, XCircle, Info, ChevronRight, Sparkles } from 'lucide-react';
+import { ChevronLeft, CheckCircle, AlertCircle, XCircle, Info, ChevronRight, Sparkles, HelpCircle, ShieldCheck } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerClose,
+} from '@/components/ui/drawer';
 import { searchProductByBarcode, searchProductsByIngredients, getIngredientSafety } from '@/data/products';
 
 export default function ReportPage() {
@@ -11,6 +19,15 @@ export default function ReportPage() {
   const t = translations[language];
   const [isVisible, setIsVisible] = useState(false);
   const [foundProduct, setFoundProduct] = useState<any>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [drawerData, setDrawerData] = useState<{
+    title: string;
+    why: string;
+    notes: string;
+    type: 'safety' | 'match';
+    score: number;
+    level: 'high' | 'medium' | 'low';
+  } | null>(null);
 
   const latestRecord = scanHistory[0];
   const result = latestRecord?.result || 'green';
@@ -122,6 +139,23 @@ export default function ReportPage() {
   const ingredientAnalysis = getIngredientAnalysis();
   const recommendations = getRecommendations();
 
+  const handleScoreClick = (type: 'safety' | 'match', score: number) => {
+    const details = (t.scoreDetails as any)[type];
+    let level: 'high' | 'medium' | 'low' = 'low';
+    if (score >= 86) level = 'high';
+    else if (score >= 61) level = 'medium';
+
+    setDrawerData({
+      title: details.title,
+      why: details[level].why,
+      notes: details[level].notes,
+      type,
+      score,
+      level
+    });
+    setIsDrawerOpen(true);
+  };
+
   return (
     <div className="min-h-screen gradient-navy flex flex-col relative overflow-hidden">
       {/* Background decoration */}
@@ -217,7 +251,13 @@ export default function ReportPage() {
 
           {/* Scores */}
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center flex flex-col items-center">
+            <button
+              onClick={() => handleScoreClick('safety', latestRecord?.safetyScore || 85)}
+              className="bg-white/10 hover:bg-white/20 transition-all backdrop-blur-sm rounded-xl p-4 text-center flex flex-col items-center group relative overflow-hidden"
+            >
+              <div className="absolute top-2 right-2 opacity-30 group-hover:opacity-100 transition-opacity">
+                <HelpCircle className="w-4 h-4 text-white" />
+              </div>
               <p className="text-white/60 text-sm mb-2">{t.safetyScore}</p>
               <div className="relative w-24 h-24 mb-3">
                 <svg className="w-full h-full transform -rotate-90">
@@ -248,12 +288,18 @@ export default function ReportPage() {
                 </div>
               </div>
               {latestRecord?.safetyExplanation && (
-                <p className="text-white/80 text-xs leading-relaxed mt-auto border-t border-white/5 pt-2">
+                <p className="text-white/80 text-xs leading-relaxed mt-auto border-t border-white/5 pt-2 w-full">
                   {latestRecord.safetyExplanation}
                 </p>
               )}
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center flex flex-col items-center">
+            </button>
+            <button
+              onClick={() => handleScoreClick('match', latestRecord?.matchScore || 78)}
+              className="bg-white/10 hover:bg-white/20 transition-all backdrop-blur-sm rounded-xl p-4 text-center flex flex-col items-center group relative overflow-hidden"
+            >
+              <div className="absolute top-2 right-2 opacity-30 group-hover:opacity-100 transition-opacity">
+                <HelpCircle className="w-4 h-4 text-white" />
+              </div>
               <p className="text-white/60 text-sm mb-2">{t.matchScore}</p>
               <div className="relative w-24 h-24 mb-3">
                 <svg className="w-full h-full transform -rotate-90">
@@ -284,11 +330,11 @@ export default function ReportPage() {
                 </div>
               </div>
               {latestRecord?.matchExplanation && (
-                <p className="text-white/80 text-xs leading-relaxed mt-auto border-t border-white/5 pt-2">
+                <p className="text-white/80 text-xs leading-relaxed mt-auto border-t border-white/5 pt-2 w-full">
                   {latestRecord.matchExplanation}
                 </p>
               )}
-            </div>
+            </button>
           </div>
 
           {/* Hazard Analysis */}
@@ -380,6 +426,54 @@ export default function ReportPage() {
           </Button>
         </div>
       </ScrollArea>
+
+      {/* Score Detail Drawer */}
+      <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        <DrawerContent className="bg-navy border-white/10 text-white">
+          <div className="mx-auto w-full max-w-sm">
+            <DrawerHeader>
+              <DrawerTitle className="text-white text-xl flex items-center gap-2 justify-center">
+                {drawerData?.type === 'safety' ? (
+                  <ShieldCheck className="w-6 h-6 text-emerald-400" />
+                ) : (
+                  <Sparkles className="w-6 h-6 text-coral" />
+                )}
+                {drawerData?.title}
+              </DrawerTitle>
+              <DrawerDescription className="text-white/60">
+                {drawerData?.type === 'safety' ? t.safetyScore : t.matchScore}: {drawerData?.score}%
+              </DrawerDescription>
+            </DrawerHeader>
+            <div className="p-6 space-y-6">
+              <div className="space-y-2">
+                <h4 className="text-coral font-bold flex items-center gap-2">
+                  <Info className="w-4 h-4" />
+                  為什麼獲得這個分數？
+                </h4>
+                <p className="text-white/80 text-sm leading-relaxed bg-white/5 p-4 rounded-xl border border-white/5">
+                  {drawerData?.why}
+                </p>
+              </div>
+              <div className="space-y-2">
+                <h4 className="text-amber-400 font-bold flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4" />
+                  使用注意事項
+                </h4>
+                <p className="text-white/80 text-sm leading-relaxed bg-amber-500/5 p-4 rounded-xl border border-amber-500/10">
+                  {drawerData?.notes}
+                </p>
+              </div>
+            </div>
+            <div className="p-6 pt-0">
+              <DrawerClose asChild>
+                <Button className="w-full bg-white/10 hover:bg-white/20 text-white py-6 rounded-xl border border-white/10">
+                  {t.close}
+                </Button>
+              </DrawerClose>
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }

@@ -193,6 +193,38 @@ export const translations = {
       retinol: 'A醇：抗老成分對青少年非必要且具高刺激性，易造成脫皮受損。',
       silicone: '矽靈：可能封閉毛孔，對於皮脂腺旺盛的青少年恐誘發粉刺。',
     },
+    scoreDetails: {
+      safety: {
+        title: '安全評分說明',
+        high: {
+          why: '成分主要由溫和的保濕劑和安定劑組成，絕不含致敏香料或強烈酸類，對嬌嫩肌膚非常友善。',
+          notes: '即使評分達標，仍建議初次使用於耳後小範圍測試，觀察是否因個人獨特體質產生偶發不適。'
+        },
+        medium: {
+          why: '含有少量防腐劑或微量活性成分（如低濃度果酸），對大多數人安全，但屏障受損時可能有感。',
+          notes: '應避免在日曬後或深度去角質後立即使用。若皮膚出現微紅或發熱感，請暫停使用並加強保濕。'
+        },
+        low: {
+          why: '含有較高濃度的刺激性成分（如酒精、人工香料），容易破壞青少年發育中的肌膚屏障。',
+          notes: '強烈建議不要頻繁使用，或先諮詢專業意見。使用時若有刺痛感應立即洗淨。'
+        }
+      },
+      match: {
+        title: '適配度說明',
+        high: {
+          why: '產品成分組合精準契合您的膚質需求（如油性肌膚搭配控油且輕薄的質地）。',
+          notes: '隨著季節或環境改變，膚質可能會有所波動，請隨時重新進行檢測以維持最佳契合。'
+        },
+        medium: {
+          why: '產品能提供基礎保養功能，但缺乏能積極改善您特定困擾（如暗沉或泛紅）的主力成分。',
+          notes: '建議搭配其他針對性精華液使用，以補足本產品在特定修護功能上的不足。'
+        },
+        low: {
+          why: '產品特性與您的肌膚需求相悖（如乾性肌膚使用了清潔力過強的控油型產品）。',
+          notes: '使用後請密切注意是否有脫皮或過度乾燥現象。若引起不適，應考慮更換更契合的產品。'
+        }
+      }
+    },
 
     // Footer
     footerText: 'Smart Buy Safe Skin © 2024',
@@ -389,7 +421,39 @@ export const translations = {
       fragrance: 'Artificial Fragrance: Common allergen, can trigger dermatitis or contact discomfort.',
       salicylic_acid: 'Salicylic Acid: High concentrations may over-exfoliate, heavy burden for student skin.',
       retinol: 'Retinol: Anti-aging active is unnecessary and highly irritating for teens, causes peeling.',
-      silicone: 'Silicone: May clog pores; risky for sebum-active teen skin, potentially inducing acne.',
+      silicone: 'Silicone: May clog pores, potentially inducing acne in teens with active sebaceous glands.',
+    },
+    scoreDetails: {
+      safety: {
+        title: 'Safety Score Info',
+        high: {
+          why: 'Ingredients are mostly gentle humectants and stabilizers, free from allergens and harsh acids.',
+          notes: 'Even with a high score, a 24-hour patch test is recommended to ensure no unique personal sensitivities.'
+        },
+        medium: {
+          why: 'Contains minor preservatives or low-level actives, generally safe but may be felt on broken barriers.',
+          notes: 'Avoid use immediately after sun exposure or exfoliation. Pause if redness occurs.'
+        },
+        low: {
+          why: 'Contains higher concentrations of irritants like alcohol or fragrance, which can disrupt teen skin.',
+          notes: 'Not recommended for frequent use. Discontinue immediately if stinging sensation occurs.'
+        }
+      },
+      match: {
+        title: 'Match Score Info',
+        high: {
+          why: 'The formula precisely matches your skin type needs (e.g., lightweight for oily skin).',
+          notes: 'Skin needs change with seasons. Retake the quiz occasionally to ensure ongoing compatibility.'
+        },
+        medium: {
+          why: 'Provides basic care but lacks specific actives to address your primary concerns like dullness.',
+          notes: 'Consider layering with a targeted serum to address your specific skin goals.'
+        },
+        low: {
+          why: 'The product profile conflicts with your skin needs (e.g., stripping products for dry skin).',
+          notes: 'Watch for excessive dryness or breakouts. Consider switching to a more compatible formula.'
+        }
+      }
     },
 
     // Footer
@@ -587,7 +651,39 @@ export const translations = {
       fragrance: '人工香料：一般的なアレルゲンであり、皮膚炎や不快感を引き起こす可能性があります。',
       salicylic_acid: 'サリチル酸：高濃度では過剰な角質剥離を招き、学生の肌には負担が大きすぎます。',
       retinol: 'レチノール：エイジングケア成分はティーンには不要で、刺激が強く皮むけの原因になります。',
-      silicone: 'シリコン：毛穴を塞ぐ可能性があり、皮脂分泌が盛んなティーンにはニキビの原因になります。',
+      silicone: 'シリコン：毛穴を塞ぐ可能性があり、皮脂分泌が盛んなティーンにはニキビを誘発する恐れがあります。',
+    },
+    scoreDetails: {
+      safety: {
+        title: '安全スコアの詳細',
+        high: {
+          why: '成分は主に低刺激の保湿剤と安定剤で構成されており、アレルゲンや強い酸は含まれていません。',
+          notes: '高スコアであっても、念のため耳の後ろなどでパッチテストを行うことをお勧めします。'
+        },
+        medium: {
+          why: '少量の防腐剤や低濃度の活性成分を含んでおり、通常は安全ですが、肌が敏感な時は刺激を感じる場合があります。',
+          notes: '日焼け直後やピーリング直後の使用は避けてください。赤みが出た場合は使用を控えてください。'
+        },
+        low: {
+          why: 'アルコールや香料など、ティーンの未発達な肌バリアを乱す可能性のある成分が高濃度で含まれています。',
+          notes: '頻繁な使用は推奨されません。刺激を感じた場合はすぐに洗い流し、使用を中止してください。'
+        }
+      },
+      match: {
+        title: '適応度スコアの詳細',
+        high: {
+          why: '成分の組み合わせがあなたの肌質（例：脂性肌向けのさっぱりしたテクスチャーなど）に正確に合致しています。',
+          notes: '季節や環境の変化で肌質も変わるため、定期的な再診断をお勧めします。'
+        },
+        medium: {
+          why: '基本的なケアは可能ですが、特定の悩み（くすみや赤みなど）を改善するための主要成分が不足しています。',
+          notes: '不足している機能を補うために、他の美容液と併用することをお勧めします。'
+        },
+        low: {
+          why: '製品の特性があなたの肌ニーズと逆行しています（例：乾燥肌に洗浄力の強すぎる製品など）。',
+          notes: '使用後の乾燥や肌荒れに注意してください。不快感がある場合は、より適した製品への変更を検討してください。'
+        }
+      }
     },
 
     // Footer
