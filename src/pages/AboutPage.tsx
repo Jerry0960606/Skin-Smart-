@@ -1,5 +1,5 @@
 import { useAppStore } from '@/store/appStore';
-import { ChevronLeft, ShieldCheck, Zap, Lock, Instagram, Mail } from 'lucide-react';
+import { ChevronLeft, ShieldCheck, Zap, Lock } from 'lucide-react';
 
 export default function AboutPage() {
     const { language, setCurrentPage } = useAppStore();
@@ -88,18 +88,6 @@ export default function AboutPage() {
                     </div>
                 </div>
 
-                {/* Contact & Community */}
-                <div className="flex flex-col items-center mt-10 space-y-4">
-                    <p className="text-white/50 text-sm uppercase tracking-widest">Connect with us</p>
-                    <div className="flex gap-4">
-                        <a href="#" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-coral hover:text-navy text-white transition-all shadow-lg border border-white/10">
-                            <Instagram className="w-5 h-5" />
-                        </a>
-                        <a href="#" className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-coral hover:text-navy text-white transition-all shadow-lg border border-white/10">
-                            <Mail className="w-5 h-5" />
-                        </a>
-                    </div>
-                </div>
 
                 {/* Disclaimer & Version */}
                 <div className="text-center mt-12 border-t border-white/10 pt-8 pb-10">

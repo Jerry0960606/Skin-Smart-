@@ -18,7 +18,7 @@ export const translations = {
     // Menu
     menu: '選單',
     home: '首頁',
-    history: '歷史記錄',
+    history: '我的化妝品',
     settings: '設定',
     help: '幫助',
     about: '關於我們',
@@ -148,7 +148,7 @@ export const translations = {
     recommendations: '推薦建議',
 
     // History
-    historyTitle: '檢測歷史',
+    historyTitle: '我的化妝品藏書',
     historyEmpty: '尚無檢測記錄',
     historyHint: '開始你的第一次產品分析吧！',
     saveResult: '保存這次結果？',
@@ -216,7 +216,7 @@ export const translations = {
     // Menu
     menu: 'Menu',
     home: 'Home',
-    history: 'History',
+    history: 'My Cosmetics',
     settings: 'Settings',
     help: 'Help',
     about: 'About Us',
@@ -346,7 +346,7 @@ export const translations = {
     recommendations: 'Recommendations',
 
     // History
-    historyTitle: 'Scan History',
+    historyTitle: 'My Cosmetics Collection',
     historyEmpty: 'No scan records yet',
     historyHint: 'Start your first product analysis!',
     saveResult: 'Save this result?',
@@ -414,7 +414,7 @@ export const translations = {
     // Menu
     menu: 'メニュー',
     home: 'ホーム',
-    history: '履歴',
+    history: '私の化粧品',
     settings: '設定',
     help: 'ヘルプ',
     about: '私たちについて',
@@ -544,7 +544,7 @@ export const translations = {
     recommendations: '推奨事項',
 
     // History
-    historyTitle: 'スキャン履歴',
+    historyTitle: '私の化粧品コレクション',
     historyEmpty: 'まだスキャン記録がありません',
     historyHint: '最初の製品分析を始めましょう！',
     saveResult: 'この結果を保存しますか？',

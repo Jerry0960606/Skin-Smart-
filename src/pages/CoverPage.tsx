@@ -131,15 +131,6 @@ export default function CoverPage() {
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </span>
             </Button>
-            
-            <Button
-              onClick={() => setCurrentPage('history')}
-              variant="outline"
-              className="w-full border-coral/50 text-coral hover:bg-coral/10 font-bold text-lg py-7 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2"
-            >
-              <Sparkles className="w-5 h-5" />
-              {language === 'zh-TW' ? '我的化妝品' : language === 'en' ? 'My Cosmetics' : '私の化粧品'}
-            </Button>
           </div>
           <div className="mt-6 flex justify-center gap-4 text-white/30">
             <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-widest">
