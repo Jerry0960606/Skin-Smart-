@@ -40,6 +40,8 @@ export default function ReportPage() {
         return <AlertCircle className="w-5 h-5 text-amber-400" />;
       case 'warning':
         return <XCircle className="w-5 h-5 text-rose-400" />;
+      case 'unknown':
+        return <Info className="w-5 h-5 text-white/30" />;
       default:
         return <Info className="w-5 h-5 text-white/50" />;
     }
@@ -53,6 +55,8 @@ export default function ReportPage() {
         return 'text-amber-400';
       case 'warning':
         return 'text-rose-400';
+      case 'unknown':
+        return 'text-white/40';
       default:
         return 'text-white/70';
     }
@@ -143,8 +147,12 @@ export default function ReportPage() {
           {/* Product info card */}
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-6">
             <div className="flex items-start gap-4">
-              <div className="w-20 h-20 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                <span className="text-2xl">🧴</span>
+              <div className="w-20 h-20 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0 relative overflow-hidden">
+                {latestRecord?.imageUrl ? (
+                  <img src={latestRecord.imageUrl} alt="Product" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-2xl">🧴</span>
+                )}
               </div>
               <div>
                 <p className="text-white/60 text-sm mb-1">{t.productName}</p>

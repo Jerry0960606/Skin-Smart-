@@ -198,16 +198,25 @@ export default function ResultPage() {
             {config.description}
           </motion.p>
 
-          {/* Product name */}
-          {foundProduct && (
-            <motion.p
+          {/* Product name & Image */}
+          {(foundProduct || latestRecord?.productName) && (
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.9 }}
-              className="text-white text-center font-bold mb-4 bg-white/5 py-2 rounded-xl"
+              className="flex items-center gap-3 bg-white/5 p-3 rounded-2xl mb-4"
             >
-              {foundProduct.name[language]}
-            </motion.p>
+              <div className="w-12 h-12 rounded-xl bg-white/10 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                {latestRecord?.imageUrl ? (
+                  <img src={latestRecord.imageUrl} alt="Product" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-xl">🧴</span>
+                )}
+              </div>
+              <p className="text-white font-bold truncate flex-1">
+                {foundProduct?.name?.[language] || latestRecord?.productName}
+              </p>
+            </motion.div>
           )}
 
           {/* Skin warning */}

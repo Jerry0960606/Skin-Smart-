@@ -4,7 +4,7 @@ import { translations } from '@/i18n/translations';
 import { searchProductByBarcode, searchProductsByIngredients, analyzeIngredientList, type Product } from '@/data/products';
 
 export default function AnalyzingPage() {
-  const { language, setCurrentPage, skinType, currentProduct, addToHistory, setCurrentResult, blacklist } = useAppStore();
+  const { language, currentProduct } = useAppStore();
   const t = translations[language];
   const [progress, setProgress] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
@@ -52,44 +52,57 @@ export default function AnalyzingPage() {
         (currentProduct && !/^\d+$/.test(currentProduct) ? 
           currentProduct.split(/[平衡,，、\n]+/).map(i => i.trim()).filter(i => i.length > 0) : []);
 
-      const analysisResult = analyzeIngredientList(ingredientsToAnalyze, language, skinType);
-      const result = analysisResult.result;
-      const safetyScore = analysisResult.safetyScore;
-      const matchScore = analysisResult.matchScore;
-      const safetyExplanation = analysisResult.safetyExplanation;
-      const matchExplanation = analysisResult.matchExplanation;
+      // Get latest state safely
+      const state = useAppStore.getState();
+      const profile = state.skinProfile;
+      const lang = state.language;
+      const bl = state.blacklist;
+      
+      const analysisResult = analyzeIngredientList(ingredientsToAnalyze, lang, profile);
+      const res = analysisResult.result;
+      const sScore = analysisResult.safetyScore;
+      const mScore = analysisResult.matchScore;
+      const sExpl = analysisResult.safetyExplanation;
+      const mExpl = analysisResult.matchExplanation;
 
       // Final adjustments for Personal Blacklist
       const hasBlacklisted = ingredientsToAnalyze.some(ing =>
-        blacklist.some(b => ing.toLowerCase().includes(b.toLowerCase()))
+        bl.some(b => ing.toLowerCase().includes(b.toLowerCase()))
       );
       
-      const finalResult = hasBlacklisted ? 'red' : result;
-      setCurrentResult(finalResult);
+      const finalResult = hasBlacklisted ? 'red' : res;
+      state.setCurrentResult(finalResult);
 
       // Add to history
-      const productName = foundProduct ? foundProduct.name[language] : 
-        (currentProduct && !/^\d+$/.test(currentProduct) ? 
-          (language === 'zh-TW' ? '手動輸入成分分析' : language === 'en' ? 'Manual Ingredient Analysis' : '手動入力成分分析') : 
-          (currentProduct || 'Unknown Product'));
+      const name = foundProduct ? foundProduct.name[lang] : 
+        (state.manualProductName || 
+          (currentProduct && !/^\d+$/.test(currentProduct) ? 
+            (lang === 'zh-TW' ? '手動輸入成分分析' : lang === 'en' ? 'Manual Ingredient Analysis' : '手動入力成分分析') : 
+            (currentProduct || 'Unknown Product')));
 
-      addToHistory({
-        productName: productName,
+      state.addToHistory({
+        productName: name,
         result: finalResult,
-        skinType: skinType || 'normal',
-        safetyScore: safetyScore,
-        matchScore: matchScore,
+        skinType: profile?.type || 'normal',
+        skinProfile: profile || undefined,
+        safetyScore: sScore,
+        matchScore: mScore,
+        imageUrl: state.manualProductImage || undefined,
         ingredients: ingredientsToAnalyze,
-        safetyExplanation: safetyExplanation,
-        matchExplanation: matchExplanation,
+        safetyExplanation: sExpl,
+        matchExplanation: mExpl,
       });
+
+      // Clear manual metadata for next time
+      state.setManualProductName(null);
+      state.setManualProductImage(null);
 
       // Navigate to result page after short delay
       setTimeout(() => {
-        setCurrentPage('result');
+        state.setCurrentPage('result');
       }, 500);
     }
-  }, [isComplete, foundProduct, skinType, language]);
+  }, [isComplete, foundProduct, currentProduct]);
 
   const getAnalysisSteps = () => {
     const steps = {

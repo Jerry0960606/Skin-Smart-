@@ -116,20 +116,31 @@ export default function CoverPage() {
           transition={{ delay: 1.2, duration: 0.8 }}
           className="w-full"
         >
-          <Button
-            onClick={() => setCurrentPage('reminder')}
-            className="w-full bg-coral hover:bg-coral-dark text-navy font-black text-xl py-8 rounded-2xl shadow-2xl shadow-coral/20 transition-all duration-300 group overflow-hidden relative"
-          >
-            <motion.div
-              className="absolute inset-0 bg-white/20 translate-x-[-100%]"
-              whileHover={{ translateX: '100%' }}
-              transition={{ duration: 0.6 }}
-            />
-            <span className="flex items-center gap-3 relative z-10">
-              {t.startAnalysis}
-              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-            </span>
-          </Button>
+          <div className="flex flex-col gap-4 w-full">
+            <Button
+              onClick={() => setCurrentPage('reminder')}
+              className="w-full bg-coral hover:bg-coral-dark text-navy font-black text-xl py-8 rounded-2xl shadow-2xl shadow-coral/20 transition-all duration-300 group overflow-hidden relative"
+            >
+              <motion.div
+                className="absolute inset-0 bg-white/20 translate-x-[-100%]"
+                whileHover={{ translateX: '100%' }}
+                transition={{ duration: 0.6 }}
+              />
+              <span className="flex items-center gap-3 relative z-10">
+                {t.startAnalysis}
+                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+              </span>
+            </Button>
+            
+            <Button
+              onClick={() => setCurrentPage('history')}
+              variant="outline"
+              className="w-full border-coral/50 text-coral hover:bg-coral/10 font-bold text-lg py-7 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2"
+            >
+              <Sparkles className="w-5 h-5" />
+              {language === 'zh-TW' ? '我的化妝品' : language === 'en' ? 'My Cosmetics' : '私の化粧品'}
+            </Button>
+          </div>
           <div className="mt-6 flex justify-center gap-4 text-white/30">
             <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-widest">
               <Sparkles className="w-3 h-3 text-coral" />

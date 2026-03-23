@@ -2255,17 +2255,40 @@ export function getIngredientSafety(ingredient: string, language: 'zh-TW' | 'en'
 }
 
 // Analyze a list of ingredients and return scores + analysis
-export function analyzeIngredientList(ingredients: string[], language: 'zh-TW' | 'en' | 'ja', skinType: string | null = 'normal') {
+export function analyzeIngredientList(ingredients: string[], language: 'zh-TW' | 'en' | 'ja', skinProfile: any = null) {
   let safetyScore = 100;
-  let matchScore = 80; // Baseline match
+  let matchScore = 80;
   
+  const profile = skinProfile || { type: 'normal', sensitivity: 1, oiliness: 50, acneProne: false, sunSensitive: false, barrierHealth: 2, concerns: [] };
+  const skinType = profile.type;
+
   const warnings: string[] = [];
   const benefits: string[] = [];
+  const unknownIngredients: string[] = [];
 
   const analysis = ingredients.map(ing => {
     const info = getIngredientSafety(ing, language);
+    const isUnknown = info.description.includes('暫無詳細資料') || info.description.includes('No detailed information');
+    
+    if (isUnknown) {
+      unknownIngredients.push(ing);
+      return {
+        name: ing,
+        safety: 'unknown' as any,
+        description: language === 'zh-TW' ? '此成分目前暫未列入資料庫，不計入產品評估' : 
+                     language === 'en' ? 'This ingredient is not in the database and is excluded from evaluation' :
+                     'この成分は現在データベースに登録されておらず、評価から除外されています'
+      };
+    }
+
+    // Safety Impact
     if (info.safety === 'warning') {
-      safetyScore -= 15;
+      let penalty = 15;
+      // Heavier penalty for sensitive skin or specific ingredients
+      if (ing.toLowerCase().includes('retinol') && (profile.sensitivity > 1 || profile.sunSensitive)) {
+        penalty = 25;
+      }
+      safetyScore -= penalty;
       warnings.push(ing);
     }
     if (info.safety === 'caution') {
@@ -2273,29 +2296,40 @@ export function analyzeIngredientList(ingredients: string[], language: 'zh-TW' |
       warnings.push(ing);
     }
     
-    // Simple benefit detection
+    // Benefit/Match Impact
     const lowerIng = ing.toLowerCase();
-    if (lowerIng.includes('hyaluronic') || lowerIng.includes('glycerin') || lowerIng.includes('panthenol')) {
-      if (skinType === 'dry' || skinType === 'sensitive') {
-        matchScore += 3;
-        benefits.push(ing);
-      }
-    }
-    if (lowerIng.includes('salicylic') || lowerIng.includes('tea tree') || lowerIng.includes('zinc')) {
-      if (skinType === 'oily' || skinType === 'combination') {
-        matchScore += 3;
-        benefits.push(ing);
-      }
-    }
-    if (lowerIng.includes('centella') || lowerIng.includes('madecassoside') || lowerIng.includes('allantoin')) {
-      if (skinType === 'sensitive') {
+    
+    // Hydration
+    if (lowerIng.includes('hyaluronic') || lowerIng.includes('glycerin') || lowerIng.includes('panthenol') || lowerIng.includes('sodium hyaluronate')) {
+      if (skinType === 'dry' || skinType === 'sensitive' || profile.barrierHealth < 2) {
         matchScore += 4;
         benefits.push(ing);
       }
     }
+    
+    // Oil Control / Acne
+    if (lowerIng.includes('salicylic') || lowerIng.includes('tea tree') || lowerIng.includes('zinc') || lowerIng.includes('niacinamide')) {
+      if (profile.oiliness > 60 || profile.acneProne) {
+        matchScore += 4;
+        benefits.push(ing);
+      }
+      if (lowerIng.includes('salicylic') && profile.barrierHealth < 1) {
+        matchScore -= 5; // Too harsh for broken barrier
+      }
+    }
+    
+    // Calming
+    if (lowerIng.includes('centella') || lowerIng.includes('madecassoside') || lowerIng.includes('allantoin') || lowerIng.includes('mugwort')) {
+      if (profile.sensitivity > 0 || profile.type === 'sensitive' || profile.concerns.includes('sensitivity')) {
+        matchScore += 5;
+        benefits.push(ing);
+      }
+    }
+    
+    // Negative Match (Harsh ingredients for specific profiles)
     if (lowerIng.includes('alcohol') || lowerIng.includes('fragrance')) {
-      if (skinType === 'sensitive' || skinType === 'dry') {
-        matchScore -= 10;
+      if (profile.sensitivity > 1 || profile.type === 'dry') {
+        matchScore -= 12;
       }
     }
 
@@ -2315,44 +2349,60 @@ export function analyzeIngredientList(ingredients: string[], language: 'zh-TW' |
   else if (safetyScore >= 70 && matchScore >= 50) result = 'yellow';
   else result = 'red';
 
-  // Generate localized explanations
+  // Generate localized deep explanations
   const getExplanations = () => {
     if (language === 'zh-TW') {
-      const safetyExpl = warnings.length > 0 
-        ? `含有 ${warnings.slice(0, 2).join('、')}${warnings.length > 2 ? '等' : ''} 需要注意的成分，建議謹慎使用。`
-        : '成分組成非常純淨安全，適合長期使用。';
+      let safetyExpl = '';
+      if (warnings.length > 0) {
+        safetyExpl = `含有 ${warnings.slice(0, 2).join('、')} 等成分。`;
+        if (warnings.some(w => w.toLowerCase().includes('retinol')) && profile.sunSensitive) {
+          safetyExpl += ' 特別注意到您對陽光較敏感，A醇成分需加強防曬。';
+        } else {
+          safetyExpl += ' 建議先進行局部測試。';
+        }
+      } else {
+        safetyExpl = '成分極其溫和安全，適合您的肌膚屏障狀況。';
+      }
       
       let matchExpl = '';
       if (benefits.length > 0) {
-        matchExpl = `含有 ${benefits.slice(0, 2).join('、')}，對您的 ${skinType === 'dry' ? '乾性' : skinType === 'oily' ? '油性' : skinType === 'sensitive' ? '敏感' : '肌膚'} 有良好的保養效果。`;
+        matchExpl = `含有 ${benefits.slice(0, 2).join('、')}。`;
+        if (profile.oiliness > 70) {
+          matchExpl += ' 這些成分能有效平衡您的出油狀況。';
+        } else if (profile.type === 'dry') {
+          matchExpl += ' 能深度滋潤您的乾燥肌膚。';
+        } else if (profile.type === 'sensitive') {
+          matchExpl += ' 有助於舒緩您的敏感乾癢。';
+        }
       } else {
-        matchExpl = '基礎保養成分充足，能提供基本的肌膚護理。';
+        matchExpl = '這是一款基礎型產品，能維持現狀但缺乏針對性改善。';
       }
-      if (matchScore < 60) matchExpl = '部分成分可能與您的膚質不符，建議先小面積測試。';
+      
+      if (unknownIngredients.length > 0) {
+        matchExpl += ` (注意：有 ${unknownIngredients.length} 項成分暫不在資料庫中)。`;
+      }
       
       return { safetyExpl, matchExpl };
     } else if (language === 'en') {
       const safetyExpl = warnings.length > 0 
-        ? `Contains ingredients like ${warnings.slice(0, 2).join(', ')} that require caution.`
-        : 'Very clean and safe ingredients, suitable for long-term use.';
+        ? `Contains ${warnings.slice(0, 2).join(', ')}. Use with caution ${profile.sunSensitive ? 'especially under sun' : ''}.`
+        : 'Highly safe and compatible with your current skin barrier.';
       
       let matchExpl = benefits.length > 0
-        ? `Contains ${benefits.slice(0, 2).join(', ')}, which are beneficial for your ${skinType} skin.`
-        : 'Contains standard ingredients for basic skin care.';
+        ? `Contains ${benefits.slice(0, 2).join(', ')}, helping address your ${profile.concerns[0] || 'skin'} needs.`
+        : 'Basic product that provides standard care for your skin type.';
       
-      if (matchScore < 60) matchExpl = 'Some ingredients may not match your skin type well.';
+      if (unknownIngredients.length > 0) matchExpl += ` (${unknownIngredients.length} unknown ingredients skipped).`;
       
       return { safetyExpl, matchExpl };
     } else {
       const safetyExpl = warnings.length > 0 
-        ? `${warnings.slice(0, 2).join('、')}などの注意が必要な成分が含まれています。`
-        : '非常に安全な成分構成で、長期的な使用に適しています。';
+        ? `${warnings.slice(0, 2).join('、')}が含まれています。慎重に使用してください。`
+        : '成分は非常に安全で、あなたの肌バリアに適しています。';
       
       let matchExpl = benefits.length > 0
-        ? `${benefits.slice(0, 2).join('、')}が含まれており、あなたの${skinType}肌に良い効果が期待できます。`
-        : '標準的な成分が含まれており、基本的なスキンケアを提供します。';
-      
-      if (matchScore < 60) matchExpl = '一部の成分があなたの肌タイプに合わない可能性があります。';
+        ? `${benefits.slice(0, 2).join('、')}が配合されており、あなたの${profile.type}肌をサポートします。`
+        : '基本的なケアを提供する標準的な製品です。';
       
       return { safetyExpl, matchExpl };
     }

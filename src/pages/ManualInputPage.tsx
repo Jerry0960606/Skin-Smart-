@@ -1,23 +1,40 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { translations } from '@/i18n/translations';
-import { ChevronLeft, X } from 'lucide-react';
+import { ChevronLeft, X, Camera, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 export default function ManualInputPage() {
-    const { language, setCurrentPage, setCurrentProduct, scanType } = useAppStore();
+    const { language, setCurrentPage, setCurrentProduct, scanType, setManualProductName, setManualProductImage } = useAppStore();
     const t = translations[language];
     const [isVisible, setIsVisible] = useState(false);
     const [manualInput, setManualInput] = useState('');
+    const [productName, setProductName] = useState('');
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 100);
         return () => clearTimeout(timer);
     }, []);
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64 = reader.result as string;
+                setImagePreview(base64);
+                setManualProductImage(base64);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleManualSubmit = () => {
         if (manualInput.trim()) {
+            setManualProductName(productName.trim() || null);
             setCurrentProduct(manualInput.trim());
             setCurrentPage('analyzing');
         }
@@ -81,7 +98,7 @@ export default function ManualInputPage() {
             </div>
 
             {/* Main content */}
-            <div className={`relative z-10 flex-1 flex flex-col items-center justify-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <div className={`relative z-10 flex-1 flex flex-col items-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                 <div className="w-full max-w-md">
                     <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6">
                         <div className="flex items-center justify-between mb-6">
@@ -94,31 +111,82 @@ export default function ManualInputPage() {
                             </button>
                         </div>
 
-                        <div className="space-y-4">
-                            <Input
-                                type="text"
-                                value={manualInput}
-                                onChange={(e) => setManualInput(e.target.value)}
-                                placeholder={getPlaceholder()}
-                                className="w-full bg-white/10 border-white/20 text-white placeholder:text-white/40 py-6 text-lg"
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter') {
-                                        handleManualSubmit();
-                                    }
-                                }}
-                            />
+                        <div className="space-y-6">
+                            {/* Image Upload */}
+                            <div className="flex flex-col items-center gap-4">
+                                <div
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className="w-32 h-32 rounded-3xl bg-white/5 border-2 border-dashed border-white/20 flex flex-col items-center justify-center cursor-pointer hover:border-coral/50 transition-all overflow-hidden relative group"
+                                >
+                                    {imagePreview ? (
+                                        <>
+                                            <img src={imagePreview} alt="Product" className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                                <Camera className="w-8 h-8 text-white" />
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ImageIcon className="w-8 h-8 text-white/30 mb-2" />
+                                            <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">
+                                                {language === 'zh-TW' ? '新增圖片' : 'Add Image'}
+                                            </span>
+                                        </>
+                                    )}
+                                </div>
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleImageChange}
+                                    accept="image/*"
+                                    className="hidden"
+                                />
+                            </div>
 
-                            <Button
-                                onClick={handleManualSubmit}
-                                disabled={!manualInput.trim()}
-                                className="w-full bg-coral hover:bg-coral-dark text-navy font-bold py-6 rounded-xl disabled:opacity-50"
-                            >
-                                {t.next}
-                            </Button>
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-white/60 ml-1">
+                                        {language === 'zh-TW' ? '產品名稱' : 'Product Name'}
+                                    </label>
+                                    <Input
+                                        type="text"
+                                        value={productName}
+                                        onChange={(e) => setProductName(e.target.value)}
+                                        placeholder={language === 'zh-TW' ? '例如：我的晚霜' : 'e.g., My Night Cream'}
+                                        className="w-full bg-white/10 border-white/20 text-white placeholder:text-white/40 py-6 text-lg"
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-white/60 ml-1">
+                                        {scanType === 'barcode' ? (language === 'zh-TW' ? '條碼編號' : 'Barcode') : (language === 'zh-TW' ? '成分列表' : 'Ingredients')}
+                                    </label>
+                                    <Input
+                                        type="text"
+                                        value={manualInput}
+                                        onChange={(e) => setManualInput(e.target.value)}
+                                        placeholder={getPlaceholder()}
+                                        className="w-full bg-white/10 border-white/20 text-white placeholder:text-white/40 py-6 text-lg"
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                handleManualSubmit();
+                                            }
+                                        }}
+                                    />
+                                </div>
+
+                                <Button
+                                    onClick={handleManualSubmit}
+                                    disabled={!manualInput.trim()}
+                                    className="w-full bg-coral hover:bg-coral-dark text-navy font-bold py-6 rounded-xl disabled:opacity-50"
+                                >
+                                    {t.next}
+                                </Button>
+                            </div>
                         </div>
 
                         {/* Example */}
-                        <div className="mt-6 p-4 bg-white/5 rounded-xl">
+                        <div className="mt-8 p-4 bg-white/5 rounded-xl">
                             <p className="text-white/40 text-sm mb-2">
                                 {language === 'zh-TW' ? '範例：' : language === 'en' ? 'Example: ' : '例：'}
                             </p>
