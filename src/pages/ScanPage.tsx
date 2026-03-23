@@ -15,6 +15,8 @@ export default function ScanPage() {
   const [inputType, setInputType] = useState<'barcode' | 'ingredients'>('barcode');
   const [isOCRProcessing, setIsOCRProcessing] = useState(false);
   const [ocrProgress, setOcrProgress] = useState(0);
+  const [isCameraReady, setIsCameraReady] = useState(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -60,6 +62,8 @@ export default function ScanPage() {
       });
       videoRef.current.srcObject = null;
     }
+    setIsCameraReady(false);
+    setCameraError(null);
   };
 
   useEffect(() => {
@@ -76,12 +80,22 @@ export default function ScanPage() {
           });
           if (videoRef.current && isMounted.current) {
             videoRef.current.srcObject = stream;
+            // Add listener to actual video playing
+            videoRef.current.onloadedmetadata = () => {
+              if (isMounted.current) setIsCameraReady(true);
+            };
           }
-        } catch (err) {
+        } catch (err: any) {
           console.error('Camera error:', err);
           if (isMounted.current) {
-            // Handle specific errors like NotAllowedError or NotFoundError
-            setShowCamera(false);
+            let errorMsg = language === 'zh-TW' ? '無法啟動相機，請檢查權限設定' : 'Camera failed to start, please check settings';
+            if (err.name === 'NotAllowedError') {
+              errorMsg = language === 'zh-TW' ? '相機權限已被拒絕，請在瀏覽器設定中開啟' : 'Camera permission denied, please enable in settings';
+            } else if (err.name === 'NotFoundError') {
+              errorMsg = language === 'zh-TW' ? '找不到相機裝置' : 'Camera device not found';
+            }
+            setCameraError(errorMsg);
+            setIsCameraReady(false);
           }
         }
       };
@@ -121,6 +135,7 @@ export default function ScanPage() {
             // Intentionally suppressed parse errors
           }
         ).then(() => {
+          if (isMounted.current) setIsCameraReady(true);
           // Set timeout for 5 seconds empty scanning
           scanTimeoutRef.current = setTimeout(() => {
             setShowTimeoutPrompt(true);
@@ -411,12 +426,33 @@ export default function ScanPage() {
               )}
 
               {/* Fallback mock camera view */}
-              <div className="absolute inset-0 flex items-center justify-center bg-navy/80">
-                <div className="text-center">
-                  <Camera className="w-16 h-16 text-white/30 mx-auto mb-4" />
-                  <p className="text-white/50">{t.scanProcessing}</p>
+              {!isCameraReady && !cameraError && (
+                <div className="absolute inset-0 flex items-center justify-center bg-navy/80 z-10 transition-opacity duration-300">
+                  <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-coral/30 border-t-coral rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-white/50">{t.scanProcessing}</p>
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* Camera Error Display */}
+              {cameraError && (
+                <div className="absolute inset-0 flex items-center justify-center bg-navy/90 z-20 p-6 text-center">
+                  <div className="space-y-4">
+                    <div className="w-16 h-16 bg-rose-500/20 rounded-full flex items-center justify-center mx-auto">
+                      <Camera className="w-8 h-8 text-rose-500" />
+                    </div>
+                    <p className="text-white font-medium">{cameraError}</p>
+                    <Button
+                      variant="outline"
+                      className="border-white/20 text-white"
+                      onClick={() => setShowCamera(false)}
+                    >
+                      {t.back}
+                    </Button>
+                  </div>
+                </div>
+              )}
 
               {/* Scan overlay */}
               <div className="absolute inset-0 pointer-events-none">
