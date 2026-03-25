@@ -51,16 +51,16 @@ export default function GenderPage() {
           {t.selectGender}
         </h1>
         
-        <p className="text-white/60 text-center mb-10">
+        <p className="text-white/60 text-center mb-6">
           {t.genderHint}
         </p>
 
         {/* Gender options */}
-        <div className="flex flex-col sm:flex-row gap-6 mb-10 w-full max-w-md">
+        <div className="flex flex-row gap-4 mb-6 w-full max-w-md">
           {/* Boy option */}
           <button
             onClick={() => handleGenderSelect('boy')}
-            className={`flex-1 flex flex-col items-center p-8 rounded-2xl border-2 transition-all duration-300 ${
+            className={`flex-1 flex flex-col items-center p-5 rounded-2xl border-2 transition-all duration-300 ${
               selectedGender === 'boy'
                 ? 'border-coral bg-coral/20'
                 : 'border-white/20 bg-white/5 hover:border-white/40'
@@ -69,9 +69,9 @@ export default function GenderPage() {
             <img
               src="/images/Boy.png"
               alt="Boy"
-              className="w-24 h-24 object-contain mb-4"
+              className="w-16 h-16 object-contain mb-3"
             />
-            <span className={`text-lg font-semibold ${
+            <span className={`text-base font-semibold ${
               selectedGender === 'boy' ? 'text-coral' : 'text-white'
             }`}>
               {t.boy}
@@ -81,7 +81,7 @@ export default function GenderPage() {
           {/* Girl option */}
           <button
             onClick={() => handleGenderSelect('girl')}
-            className={`flex-1 flex flex-col items-center p-8 rounded-2xl border-2 transition-all duration-300 ${
+            className={`flex-1 flex flex-col items-center p-5 rounded-2xl border-2 transition-all duration-300 ${
               selectedGender === 'girl'
                 ? 'border-coral bg-coral/20'
                 : 'border-white/20 bg-white/5 hover:border-white/40'
@@ -90,9 +90,9 @@ export default function GenderPage() {
             <img
               src="/images/Girl.png"
               alt="Girl"
-              className="w-24 h-24 object-contain mb-4"
+              className="w-16 h-16 object-contain mb-3"
             />
-            <span className={`text-lg font-semibold ${
+            <span className={`text-base font-semibold ${
               selectedGender === 'girl' ? 'text-coral' : 'text-white'
             }`}>
               {t.girl}
@@ -101,11 +101,11 @@ export default function GenderPage() {
         </div>
 
         {/* Character */}
-        <div className="mb-8">
+        <div className="mb-5">
           <img
             src="/images/Ask Gender.png"
             alt="Dr. Lipstick"
-            className="w-28 h-28 object-contain"
+            className="w-20 h-20 object-contain"
           />
         </div>
 

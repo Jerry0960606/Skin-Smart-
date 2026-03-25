@@ -157,18 +157,18 @@ export default function QuizPage() {
           )}
 
           {questionType === 'choice' && (
-            <div className="flex-1 flex flex-col gap-3 mb-6">
+            <div className="flex-1 flex flex-col gap-2 mb-4">
               {[0, 1, 2, 3].map((optionIndex) => (
                 <button
                   type="button"
                   key={optionIndex}
                   onClick={() => handleChoiceAnswer(optionIndex)}
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-300 ${currentAnswer === optionIndex
+                  className={`w-full p-3 rounded-xl border-2 text-left transition-all duration-300 ${currentAnswer === optionIndex
                       ? 'border-coral bg-coral/20'
                       : 'border-white/20 bg-white/5 hover:border-white/40 hover:bg-white/10'
                     }`}
                 >
-                  <span className={`text-base md:text-lg ${currentAnswer === optionIndex ? 'text-coral font-semibold' : 'text-white'
+                  <span className={`text-sm md:text-base ${currentAnswer === optionIndex ? 'text-coral font-semibold' : 'text-white'
                     }`}>
                     {t.questions[getOptionKey(currentQuestion, optionIndex + 1)]}
                   </span>
@@ -179,11 +179,11 @@ export default function QuizPage() {
         </div>
 
         {/* Character */}
-        <div className="flex justify-center my-4">
+        <div className="hidden sm:flex justify-center my-3">
           <img
             src="/images/Question.png"
             alt="Dr. Lipstick"
-            className="w-20 h-20 object-contain"
+            className="w-16 h-16 object-contain"
           />
         </div>
 
