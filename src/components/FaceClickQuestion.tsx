@@ -99,7 +99,7 @@ export default function FaceClickQuestion({ onAnswer }: FaceClickQuestionProps) 
   return (
     <div className="w-full">
       {/* Hint */}
-      <div className="flex flex-col items-center mb-4">
+      <div className="flex flex-col items-center mb-2">
         <p className="text-white/60 text-sm text-center">
           {getHintText()}
         </p>
@@ -109,12 +109,14 @@ export default function FaceClickQuestion({ onAnswer }: FaceClickQuestionProps) 
       <div
         ref={containerRef}
         className="relative w-full max-w-xs mx-auto cursor-crosshair select-none touch-none"
+        style={{ maxHeight: '45vh' }}
         onClick={handleImageClick}
       >
         <img
           src="/images/豆豆 version 2.png"
           alt="Face"
-          className="w-full h-auto rounded-3xl"
+          className="w-full h-full object-contain rounded-3xl"
+          style={{ maxHeight: '45vh' }}
           draggable={false}
         />
 
@@ -172,7 +174,7 @@ export default function FaceClickQuestion({ onAnswer }: FaceClickQuestionProps) 
       </div>
 
       {/* Count and Clear */}
-      <div className="flex items-center justify-between mt-6 bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+      <div className="flex items-center justify-between mt-3 bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/10">
         <span className="text-coral font-bold flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-coral animate-pulse" />
           {getCountText()}
