@@ -18,12 +18,11 @@ import HistoryAnalytics from '@/components/HistoryAnalytics';
 
 export default function HistoryPage() {
   const {
-    language, setCurrentPage, scanHistory, deleteFromHistory, bulkDeleteFromHistory, clearHistory,
+    language, setCurrentPage, scanHistory, deleteFromHistory, bulkDeleteFromHistory,
     isAuthenticated, selectedComparisonIds, toggleComparisonSelection, clearComparisonSelection
   } = useAppStore();
   const t = translations[language];
   const [deleteId, setDeleteId] = useState<string>('');
-  const [showClearDialog, setShowClearDialog] = useState(false);
   const [isSelectMode, setIsSelectMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showBulkDeleteDialog, setShowBulkDeleteDialog] = useState(false);
@@ -94,14 +93,6 @@ export default function HistoryPage() {
               className={`p-2 rounded-full transition-colors ${isSelectMode ? 'bg-coral text-navy' : 'bg-white/10 text-white hover:bg-white/20'}`}
             >
               <CheckCircle className="w-5 h-5" />
-            </button>
-          )}
-          {scanHistory.length > 0 && !isSelectMode && (
-            <button
-              onClick={() => setShowClearDialog(true)}
-              className="p-2 rounded-full bg-white/10 hover:bg-rose-500/30 transition-colors"
-            >
-              <Trash2 className="w-5 h-5 text-white" />
             </button>
           )}
         </div>
