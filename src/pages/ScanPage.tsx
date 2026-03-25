@@ -5,6 +5,15 @@ import { translations } from '@/i18n/translations';
 import { ChevronLeft, Camera, ScanBarcode, ScanText, Keyboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { productsDatabase } from '@/data/products';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 export default function ScanPage() {
   const { language, setCurrentPage, setCurrentProduct, setScanType } = useAppStore();
@@ -17,6 +26,8 @@ export default function ScanPage() {
   const [ocrProgress, setOcrProgress] = useState(0);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
+  const [showBarcodeNotFound, setShowBarcodeNotFound] = useState(false);
+  const [scannedBarcode, setScannedBarcode] = useState('');
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -126,10 +137,19 @@ export default function ScanPage() {
           { fps: 10, qrbox: { width: 250, height: 250 } },
           (decodedText: string) => {
             // Successfully scanned
+            const state = useAppStore.getState();
+            const product = productsDatabase.find(p => p.barcode === decodedText) || 
+                          state.contributedProducts.find(p => p.barcode === decodedText);
             stopCamera();
             setShowCamera(false);
-            setCurrentProduct(decodedText);
-            setCurrentPage('analyzing');
+            
+            if (product) {
+              setCurrentProduct(decodedText);
+              setCurrentPage('analyzing');
+            } else {
+              setScannedBarcode(decodedText);
+              setShowBarcodeNotFound(true);
+            }
           },
           (_errorMessage: string) => {
             // Intentionally suppressed parse errors
@@ -528,6 +548,45 @@ export default function ScanPage() {
       <div className="relative z-10 text-white/40 text-xs text-center mt-6">
         {t.disclaimer}
       </div>
+
+      {/* Barcode Not Found Dialog */}
+      <Dialog open={showBarcodeNotFound} onOpenChange={setShowBarcodeNotFound}>
+        <DialogContent className="bg-navy border-white/20 text-white">
+          <DialogHeader>
+            <div className="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mb-4 mx-auto">
+              <ScanBarcode className="w-8 h-8 text-amber-500" />
+            </div>
+            <DialogTitle className="text-center text-xl">{t.barcodeNotFound}</DialogTitle>
+            <DialogDescription className="text-white/60 text-center">
+              {t.barcodeNotFoundDesc}
+              <div className="mt-2 p-3 bg-white/5 rounded-lg border border-white/10 font-mono text-sm text-coral">
+                {scannedBarcode}
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex flex-col sm:flex-row gap-3 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setShowBarcodeNotFound(false)}
+              className="border-white/20 text-white hover:bg-white/10"
+            >
+              {t.cancel}
+            </Button>
+            <Button
+              onClick={() => {
+                setShowBarcodeNotFound(false);
+                setScanType('barcode');
+                setCurrentPage('manual-input');
+                // Pass the scanned barcode via store or URL (Zustand store is better)
+                setCurrentProduct(scannedBarcode); 
+              }}
+              className="bg-coral hover:bg-coral-dark text-navy font-bold"
+            >
+              {t.addToDatabase}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

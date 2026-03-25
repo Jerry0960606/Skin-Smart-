@@ -36,6 +36,13 @@ export interface ScanRecord {
   matchExplanation?: string;
 }
 
+export interface ContributedProduct {
+  barcode: string;
+  name: string;
+  ingredients: string[];
+  imageUrl?: string;
+}
+
 interface AppState {
   // Language
   language: Language;
@@ -78,6 +85,18 @@ interface AppState {
   addToHistory: (record: Omit<ScanRecord, 'id' | 'date'>) => void;
   deleteFromHistory: (id: string) => void;
   clearHistory: () => void;
+  bulkDeleteFromHistory: (ids: string[]) => void;
+
+  // My Cosmetics
+  myCosmetics: ScanRecord[];
+  addToMyCosmetics: (record: Omit<ScanRecord, 'id' | 'date'>) => void;
+  deleteFromMyCosmetics: (id: string) => void;
+  bulkDeleteFromMyCosmetics: (ids: string[]) => void;
+  clearMyCosmetics: () => void;
+
+  // Contributed Products (Simulated Database)
+  contributedProducts: ContributedProduct[];
+  addContributedProduct: (product: ContributedProduct) => void;
 
   // Blacklist
   blacklist: string[];
@@ -90,8 +109,8 @@ interface AppState {
   clearComparisonSelection: () => void;
 
   // Navigation
-  currentPage: 'cover' | 'reminder' | 'gender' | 'quiz' | 'scan' | 'manual-input' | 'login' | 'analyzing' | 'result' | 'report' | 'history' | 'help' | 'about' | 'settings' | 'comparison' | 'wiki';
-  setCurrentPage: (page: 'cover' | 'reminder' | 'gender' | 'quiz' | 'scan' | 'manual-input' | 'login' | 'analyzing' | 'result' | 'report' | 'history' | 'help' | 'about' | 'settings' | 'comparison' | 'wiki') => void;
+  currentPage: 'cover' | 'reminder' | 'gender' | 'quiz' | 'scan' | 'manual-input' | 'login' | 'analyzing' | 'result' | 'report' | 'history' | 'cosmetics' | 'help' | 'about' | 'settings' | 'comparison' | 'wiki';
+  setCurrentPage: (page: 'cover' | 'reminder' | 'gender' | 'quiz' | 'scan' | 'manual-input' | 'login' | 'analyzing' | 'result' | 'report' | 'history' | 'cosmetics' | 'help' | 'about' | 'settings' | 'comparison' | 'wiki') => void;
 
   // Menu
   isMenuOpen: boolean;
@@ -211,6 +230,33 @@ export const useAppStore = create<AppState>()(
         set({ scanHistory: get().scanHistory.filter(r => r.id !== id) });
       },
       clearHistory: () => set({ scanHistory: [] }),
+      bulkDeleteFromHistory: (ids) => {
+        set({ scanHistory: get().scanHistory.filter(r => !ids.includes(r.id)) });
+      },
+
+      // My Cosmetics
+      myCosmetics: [],
+      addToMyCosmetics: (record) => {
+        const newRecord: ScanRecord = {
+          ...record,
+          id: Date.now().toString(),
+          date: new Date().toISOString(),
+        };
+        set({ myCosmetics: [newRecord, ...get().myCosmetics] });
+      },
+      deleteFromMyCosmetics: (id) => {
+        set({ myCosmetics: get().myCosmetics.filter(r => r.id !== id) });
+      },
+      bulkDeleteFromMyCosmetics: (ids) => {
+        set({ myCosmetics: get().myCosmetics.filter(r => !ids.includes(r.id)) });
+      },
+      clearMyCosmetics: () => set({ myCosmetics: [] }),
+
+      // Contributed Products
+      contributedProducts: [],
+      addContributedProduct: (product: ContributedProduct) => {
+        set({ contributedProducts: [product, ...get().contributedProducts] });
+      },
 
       // Blacklist
       blacklist: [],
@@ -262,10 +308,13 @@ export const useAppStore = create<AppState>()(
       partialize: (state) => ({
         language: state.language,
         scanHistory: state.scanHistory,
+        myCosmetics: state.myCosmetics,
         blacklist: state.blacklist,
         isAuthenticated: state.isAuthenticated,
         skinType: state.skinType,
         gender: state.gender,
+        quizAnswers: state.quizAnswers,
+        contributedProducts: state.contributedProducts,
       }),
     }
   )

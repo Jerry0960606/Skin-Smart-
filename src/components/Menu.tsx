@@ -1,6 +1,6 @@
 import { useAppStore } from '@/store/appStore';
 import { translations } from '@/i18n/translations';
-import { X, Home, History, Settings, HelpCircle, Info, Globe, ChevronRight, LogIn, LogOut, Book } from 'lucide-react';
+import { X, Home, History, Settings, HelpCircle, Info, Globe, ChevronRight, LogIn, LogOut, BookOpen, Package } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -27,16 +27,17 @@ export default function Menu() {
   } = useAppStore();
   const t = translations[language];
 
-  const menuItems: Array<{ icon: any, label: string, page: 'cover' | 'history' | 'settings' | 'help' | 'about' | 'wiki' }> = [
+  const menuItems: Array<{ icon: any, label: string, page: 'cover' | 'history' | 'cosmetics' | 'settings' | 'help' | 'about' | 'wiki' }> = [
     { icon: Home, label: t.home, page: 'cover' },
-    { icon: History, label: t.history, page: 'history' },
-    { icon: Book, label: t.wikiTitle, page: 'wiki' },
+    { icon: Package, label: t.myCosmetics, page: 'cosmetics' },
+    { icon: History, label: t.historyItem, page: 'history' },
+    { icon: BookOpen, label: t.wikiTitle, page: 'wiki' },
     { icon: Settings, label: t.settings, page: 'settings' },
     { icon: HelpCircle, label: t.help, page: 'help' },
     { icon: Info, label: t.about, page: 'about' },
   ];
 
-  const handlePageChange = (page: 'cover' | 'history' | 'settings' | 'help' | 'about' | 'wiki') => {
+  const handlePageChange = (page: 'cover' | 'history' | 'cosmetics' | 'settings' | 'help' | 'about' | 'wiki') => {
     setCurrentPage(page);
     setMenuOpen(false);
   };

@@ -14,6 +14,7 @@ export const translations = {
     confirm: '確認',
     close: '關閉',
     loading: '載入中...',
+    login: '立即登入',
 
     // Menu
     menu: '選單',
@@ -31,7 +32,7 @@ export const translations = {
 
     // Cover Page
     coverTitle: 'Smart Buy\nSafe Skin',
-    coverSubtitle: '讓我們確保你買到適合的產品',
+    coverSubtitle: '確保您買到的每一件產品都適合您的肌膚',
 
     // Reminder Page
     reminderTitle: '等等！',
@@ -146,6 +147,19 @@ export const translations = {
     ingredients: '成分分析',
     warnings: '注意事項',
     recommendations: '推薦建議',
+    historyItem: '歷史紀錄',
+    myCosmetics: '我的化妝品藏書',
+    reuseQuiz: '要沿用上次的檢測結果嗎？',
+    retakeQuiz: '重新檢測',
+    usePrevious: '沿用紀錄',
+    barcodeNotFound: '找不到此條碼',
+    barcodeNotFoundDesc: '資料庫中目前沒有這款產品的資訊。',
+    addToDatabase: '協助添加資料',
+    analyzeNow: '要立即進行成分分析嗎？',
+    thankYouContribution: '感謝您為資料庫添加了新的產品！',
+    selectMode: '選擇模式',
+    deleteSelected: '刪除所選 ({count})',
+    confirmDelete: '確定要刪除這些項目嗎？',
 
     // History
     historyTitle: '我的化妝品藏書',
@@ -185,13 +199,13 @@ export const translations = {
     wikiCategoryWarning: '警告',
     wikiNoResults: '找不到相關成分',
     suitableFor: '適合對象',
-    hazardAnalysis: '危害分析 (青少年專注)',
+    hazardAnalysis: '成分風險分析',
     hazardRisks: {
-      alcohol: '變性酒精：對青少年開發中的肌膚屏障具高刺激性，可能導致長期敏感。',
+      alcohol: '變性酒精：可能對嬌嫩或受損的肌膚屏障具刺激性，長期使用可能導致敏感。',
       fragrance: '人工香料：常見過敏原，可能引發皮炎或接觸性不適。',
-      salicylic_acid: '水楊酸：高濃度可能過度剝離角質，對學齡肌膚負擔較重。',
-      retinol: 'A醇：抗老成分對青少年非必要且具高刺激性，易造成脫皮受損。',
-      silicone: '矽靈：可能封閉毛孔，對於皮脂腺旺盛的青少年恐誘發粉刺。',
+      salicylic_acid: '水楊酸：高濃度可能過度剝離角質，對敏感肌膚負擔較重。',
+      retinol: 'A醇：高效抗老成分，初次使用可能具高刺激性，易造成脫皮。',
+      silicone: '矽靈：可能封閉毛孔，對於皮脂分泌旺盛的肌膚恐誘發粉刺。',
     },
     scoreDetails: {
       safety: {
@@ -244,6 +258,7 @@ export const translations = {
     confirm: 'Confirm',
     close: 'Close',
     loading: 'Loading...',
+    login: 'Login Now',
 
     // Menu
     menu: 'Menu',
@@ -261,7 +276,7 @@ export const translations = {
 
     // Cover Page
     coverTitle: 'Smart Buy\nSafe Skin',
-    coverSubtitle: "Let's ensure you buy suitable products",
+    coverSubtitle: 'Ensure every product you buy is right for your skin',
 
     // Reminder Page
     reminderTitle: 'Wait!',
@@ -376,6 +391,19 @@ export const translations = {
     ingredients: 'Ingredient Analysis',
     warnings: 'Warnings',
     recommendations: 'Recommendations',
+    historyItem: 'Search History',
+    myCosmetics: 'My Cosmetics Collection',
+    reuseQuiz: 'Reuse your previous skin profile?',
+    retakeQuiz: 'Retake Quiz',
+    usePrevious: 'Use Previous',
+    barcodeNotFound: 'Barcode Not Found',
+    barcodeNotFoundDesc: 'We don\'t have information for this product in our database yet.',
+    addToDatabase: 'Contribute Data',
+    analyzeNow: 'Would you like to analyze ingredients now?',
+    thankYouContribution: 'Thank you for adding a new product to our database!',
+    selectMode: 'Select Mode',
+    deleteSelected: 'Delete Selected ({count})',
+    confirmDelete: 'Are you sure you want to delete selected items?',
 
     // History
     historyTitle: 'My Cosmetics Collection',
@@ -415,13 +443,13 @@ export const translations = {
     wikiCategoryWarning: 'Warning',
     wikiNoResults: 'No ingredients found',
     suitableFor: 'Suitable For',
-    hazardAnalysis: 'Hazard Analysis (Teen Focus)',
+    hazardAnalysis: 'Ingredient Risk Analysis',
     hazardRisks: {
-      alcohol: 'Denatured Alcohol: Highly irritating to developing skin barriers, may cause long-term sensitivity.',
+      alcohol: 'Alcohol Denat: Can be irritating to delicate or damaged skin barriers; long-term use may lead to sensitivity.',
       fragrance: 'Artificial Fragrance: Common allergen, can trigger dermatitis or contact discomfort.',
-      salicylic_acid: 'Salicylic Acid: High concentrations may over-exfoliate, heavy burden for student skin.',
-      retinol: 'Retinol: Anti-aging active is unnecessary and highly irritating for teens, causes peeling.',
-      silicone: 'Silicone: May clog pores, potentially inducing acne in teens with active sebaceous glands.',
+      salicylic_acid: 'Salicylic Acid: High concentrations may over-exfoliate, heavy burden for sensitive skin.',
+      retinol: 'Retinol: Potent anti-aging active can be highly irritating for first-time users, causes peeling.',
+      silicone: 'Silicone: May clog pores; risky for sebum-active skin, potentially inducing acne.',
     },
     scoreDetails: {
       safety: {
@@ -474,6 +502,7 @@ export const translations = {
     confirm: '確認',
     close: '閉じる',
     loading: '読み込み中...',
+    login: '今すぐログイン',
 
     // Menu
     menu: 'メニュー',
@@ -491,7 +520,7 @@ export const translations = {
 
     // Cover Page
     coverTitle: 'Smart Buy\nSafe Skin',
-    coverSubtitle: 'あなたに適した製品を購入しましょう',
+    coverSubtitle: '購入するすべての製品があなたの肌に適していることを確認しましょう',
 
     // Reminder Page
     reminderTitle: '待って！',
@@ -606,6 +635,19 @@ export const translations = {
     ingredients: '成分分析',
     warnings: '注意事項',
     recommendations: '推奨事項',
+    historyItem: '検索履歴',
+    myCosmetics: 'マイコスメ',
+    reuseQuiz: '前回の肌診断結果を使用しますか？',
+    retakeQuiz: 'もう一度診断する',
+    usePrevious: '前回の結果を使用',
+    barcodeNotFound: 'バーコードが見つかりません',
+    barcodeNotFoundDesc: 'データベースにこの商品の情報がまだありません。',
+    addToDatabase: 'データを追加する',
+    analyzeNow: '今すぐ成分分析を行いますか？',
+    thankYouContribution: 'データベースへの商品追加ありがとうございます！',
+    selectMode: '選択モード',
+    deleteSelected: '選択した項目を削除 ({count})',
+    confirmDelete: '選択した項目を削除してもよろしいですか？',
 
     // History
     historyTitle: '私の化粧品コレクション',
@@ -645,13 +687,13 @@ export const translations = {
     wikiCategoryWarning: '警告',
     wikiNoResults: '成分が見つかりませんでした',
     suitableFor: '適した対象',
-    hazardAnalysis: '危害分析 (ターゲット：ティーン)',
+    hazardAnalysis: '成分リスク分析',
     hazardRisks: {
-      alcohol: '変性アルコール：発達中の肌バリアに強い刺激を与え、長期的な敏感肌の原因になる可能性があります。',
-      fragrance: '人工香料：一般的なアレルゲンであり、皮膚炎や不快感を引き起こす可能性があります。',
-      salicylic_acid: 'サリチル酸：高濃度では過剰な角質剥離を招き、学生の肌には負担が大きすぎます。',
-      retinol: 'レチノール：エイジングケア成分はティーンには不要で、刺激が強く皮むけの原因になります。',
-      silicone: 'シリコン：毛穴を塞ぐ可能性があり、皮脂分泌が盛んなティーンにはニキビを誘発する恐れがあります。',
+      alcohol: '変性アルコール：デリケートな肌やバリア機能が低下した肌には刺激となる可能性があり、長期の使用は敏感肌を招く恐れがあります。',
+      fragrance: '人工香料：一般的なアレルゲンであり、皮膚炎や接触性不快感を引き起こす可能性があります。',
+      salicylic_acid: 'サリチル酸：高濃度では過剰な角質剥離を招き、敏感肌には負担が大きすぎます。',
+      retinol: 'レチノール：強力なエイジングケア成分ですが、初めて使用する場合は刺激が強く、皮剥けを起こすことがあります。',
+      silicone: 'シリコン：毛穴を塞ぐ可能性があり、皮脂分泌が活発な肌ではニキビを誘発する恐れがあります。',
     },
     scoreDetails: {
       safety: {
@@ -665,7 +707,7 @@ export const translations = {
           notes: '日焼け直後やピーリング直後の使用は避けてください。赤みが出た場合は使用を控えてください。'
         },
         low: {
-          why: 'アルコールや香料など、ティーンの未発達な肌バリアを乱す可能性のある成分が高濃度で含まれています。',
+          why: 'アルコールや香料など、デリケートな肌やバリア機能の低下した肌に刺激を与える可能性のある成分が高濃度で含まれています。',
           notes: '頻繁な使用は推奨されません。刺激を感じた場合はすぐに洗い流し、使用を中止してください。'
         }
       },

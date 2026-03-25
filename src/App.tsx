@@ -10,6 +10,7 @@ import AnalyzingPage from '@/pages/AnalyzingPage';
 import ResultPage from '@/pages/ResultPage';
 import ReportPage from '@/pages/ReportPage';
 import HistoryPage from '@/pages/HistoryPage';
+import CosmeticsPage from '@/pages/CosmeticsPage';
 import HelpPage from '@/pages/HelpPage';
 import AboutPage from '@/pages/AboutPage';
 import SettingsPage from '@/pages/SettingsPage';
@@ -46,6 +47,8 @@ function App() {
         return <ReportPage />;
       case 'history':
         return <HistoryPage />;
+      case 'cosmetics':
+        return <CosmeticsPage />;
       case 'help':
         return <HelpPage />;
       case 'about':

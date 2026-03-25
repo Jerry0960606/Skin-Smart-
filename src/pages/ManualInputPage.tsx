@@ -4,20 +4,41 @@ import { translations } from '@/i18n/translations';
 import { ChevronLeft, X, Camera, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 export default function ManualInputPage() {
-    const { language, setCurrentPage, setCurrentProduct, scanType, setManualProductName, setManualProductImage } = useAppStore();
+    const { 
+        language, setCurrentPage, currentProduct, setCurrentProduct, 
+        scanType, setManualProductName, setManualProductImage,
+        addContributedProduct, addToMyCosmetics, skinType
+    } = useAppStore();
     const t = translations[language];
     const [isVisible, setIsVisible] = useState(false);
     const [manualInput, setManualInput] = useState('');
+    const [ingredientsInput, setIngredientsInput] = useState('');
     const [productName, setProductName] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [showContributionDialog, setShowContributionDialog] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 100);
+        
+        // Pre-fill barcode if coming from scan
+        if (scanType === 'barcode' && currentProduct && /^\d+$/.test(currentProduct)) {
+            setManualInput(currentProduct);
+        }
+        
         return () => clearTimeout(timer);
-    }, []);
+    }, [scanType, currentProduct]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -34,9 +55,54 @@ export default function ManualInputPage() {
 
     const handleManualSubmit = () => {
         if (manualInput.trim()) {
-            setManualProductName(productName.trim() || null);
-            setCurrentProduct(manualInput.trim());
+            if (scanType === 'barcode') {
+                if (!ingredientsInput.trim()) {
+                    // Ingredients are required for barcode contribution
+                    return;
+                }
+                setShowContributionDialog(true);
+            } else {
+                setManualProductName(productName.trim() || null);
+                setCurrentProduct(manualInput.trim());
+                setCurrentPage('analyzing');
+            }
+        }
+    };
+
+    const confirmContribution = (analyze: boolean) => {
+        setShowContributionDialog(false);
+        const name = productName.trim() || (language === 'zh-TW' ? '新產品' : 'New Product');
+        
+        const productData = {
+            barcode: manualInput.trim(),
+            name: name,
+            ingredients: ingredientsInput.trim().split(',').map(i => i.trim()).filter(i => i.length > 0),
+            imageUrl: imagePreview || undefined
+        };
+        
+        // Add to simulated shared database
+        addContributedProduct(productData);
+        
+        if (analyze) {
+            setManualProductName(name);
+            setCurrentProduct(ingredientsInput.trim());
             setCurrentPage('analyzing');
+        } else {
+            // Add to personal library
+            addToMyCosmetics({
+                productName: name,
+                ingredients: productData.ingredients,
+                imageUrl: productData.imageUrl,
+                result: null,
+                safetyScore: 0,
+                matchScore: 0,
+                skinType: skinType
+            });
+            
+            toast.success(t.thankYouContribution, {
+                duration: 4000
+            });
+            setCurrentPage('cosmetics');
         }
     };
 
@@ -175,9 +241,29 @@ export default function ManualInputPage() {
                                     />
                                 </div>
 
+                                {scanType === 'barcode' && (
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-white/60 ml-1">
+                                            {language === 'zh-TW' ? '成分列表（必填，請以逗號分隔）' : 'Ingredients (Required, comma separated)'}
+                                        </label>
+                                        <Input
+                                            type="text"
+                                            value={ingredientsInput}
+                                            onChange={(e) => setIngredientsInput(e.target.value)}
+                                            placeholder={getPlaceholder()}
+                                            className="w-full bg-white/10 border-white/20 text-white placeholder:text-white/40 py-6 text-lg"
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    handleManualSubmit();
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                )}
+
                                 <Button
                                     onClick={handleManualSubmit}
-                                    disabled={!manualInput.trim()}
+                                    disabled={!manualInput.trim() || (scanType === 'barcode' && !ingredientsInput.trim())}
                                     className="w-full bg-coral hover:bg-coral-dark text-navy font-bold py-6 rounded-xl disabled:opacity-50"
                                 >
                                     {t.next}
@@ -200,6 +286,34 @@ export default function ManualInputPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Contribution Dialog */}
+            <Dialog open={showContributionDialog} onOpenChange={setShowContributionDialog}>
+              <DialogContent className="bg-navy border-white/20 text-white">
+                <DialogHeader>
+                  <DialogTitle>{t.addToDatabase}</DialogTitle>
+                  <DialogDescription className="text-white/60">
+                    {t.analyzeNow}
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter className="flex flex-col sm:flex-row gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => confirmContribution(false)}
+                    className="border-white/20 text-white hover:bg-white/10"
+                  >
+                    {language === 'zh-TW' ? '僅保存' : 'Only Save'}
+                  </Button>
+                  <Button
+                    onClick={() => confirmContribution(true)}
+                    className="bg-coral hover:bg-coral-dark text-navy font-bold"
+                  >
+                    {language === 'zh-TW' ? '現在分析' : 'Analyze Now'}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
         </div>
     );
 }
+

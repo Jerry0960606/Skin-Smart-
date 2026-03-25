@@ -5,6 +5,14 @@ import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import SliderQuestion from '@/components/SliderQuestion';
 import FaceClickQuestion from '@/components/FaceClickQuestion';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 const TOTAL_QUESTIONS = 10;
 
@@ -23,10 +31,17 @@ const QUESTION_TYPES: Record<number, 'choice' | 'slider' | 'face'> = {
 };
 
 export default function QuizPage() {
-  const { language, setCurrentPage, quizAnswers, setQuizAnswer, calculateSkinType } = useAppStore();
+  const { language, setCurrentPage, quizAnswers, setQuizAnswer, calculateSkinType, resetQuiz } = useAppStore();
   const t = translations[language];
   const [isVisible, setIsVisible] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(1);
+  const [showReuseDialog, setShowReuseDialog] = useState(false);
+
+  useEffect(() => {
+    if (quizAnswers.length === TOTAL_QUESTIONS) {
+      setShowReuseDialog(true);
+    }
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100);
@@ -184,6 +199,42 @@ export default function QuizPage() {
           </Button>
         </div>
       </div>
+
+      {/* Reuse Quiz Dialog */}
+      <Dialog open={showReuseDialog} onOpenChange={setShowReuseDialog}>
+        <DialogContent className="bg-navy border-white/20 text-white">
+          <DialogHeader>
+            <DialogTitle>{t.reuseQuiz}</DialogTitle>
+            <DialogDescription className="text-white/60">
+              {language === 'zh-TW' 
+                ? '系統已儲存您上次的皮膚分析，要直接使用上次的結果，還是重新進行一次？' 
+                : 'We have saved your previous skin analysis. Would you like to use it or retake the quiz?'}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex flex-col sm:flex-row gap-3">
+            <Button
+              variant="outline"
+              onClick={() => {
+                resetQuiz();
+                setShowReuseDialog(false);
+              }}
+              className="border-white/20 text-white hover:bg-white/10"
+            >
+              {t.retakeQuiz}
+            </Button>
+            <Button
+              onClick={() => {
+                calculateSkinType();
+                setCurrentPage('scan');
+                setShowReuseDialog(false);
+              }}
+              className="bg-coral hover:bg-coral-dark text-navy font-bold"
+            >
+              {t.usePrevious}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

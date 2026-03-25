@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAppStore } from '@/store/appStore';
 import { translations } from '@/i18n/translations';
 import { Button } from '@/components/ui/button';
-import { Globe, Sparkles, ArrowRight } from 'lucide-react';
+import { Globe, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function CoverPage() {
@@ -131,12 +131,6 @@ export default function CoverPage() {
                 <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
               </span>
             </Button>
-          </div>
-          <div className="mt-6 flex justify-center gap-4 text-white/30">
-            <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-widest">
-              <Sparkles className="w-3 h-3 text-coral" />
-              Teen Safe
-            </div>
           </div>
         </motion.div>
       </div>
