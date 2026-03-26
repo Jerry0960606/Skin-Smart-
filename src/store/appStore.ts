@@ -304,7 +304,15 @@ export const useAppStore = create<AppState>()(
       }),
     }),
     {
-      name: 'smart-buy-safe-skin',
+      name: 'smart-buy-safe-skin-v2',
+      version: 1,
+      migrate: (persistedState: any, version: number) => {
+        if (version === 0) {
+          // Force language to English for migration from older versions
+          return { ...persistedState, language: 'en' };
+        }
+        return persistedState;
+      },
       partialize: (state) => ({
         language: state.language,
         scanHistory: state.scanHistory,
