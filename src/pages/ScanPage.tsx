@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Html5Qrcode } from 'html5-qrcode';
 import { useAppStore } from '@/store/appStore';
 import { translations } from '@/i18n/translations';
-import { ChevronLeft, Camera, ScanBarcode, ScanText, Keyboard } from 'lucide-react';
+import { ChevronLeft, Camera, ScanBarcode, ScanText, Keyboard, HelpCircle, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { productsDatabase } from '@/data/products';
@@ -28,6 +28,7 @@ export default function ScanPage() {
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [showBarcodeNotFound, setShowBarcodeNotFound] = useState(false);
   const [scannedBarcode, setScannedBarcode] = useState('');
+  const [showInstructions, setShowInstructions] = useState(false);
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -39,11 +40,25 @@ export default function ScanPage() {
     const timer = setTimeout(() => {
       if (isMounted.current) setIsVisible(true);
     }, 100);
+
+    // Check if instructions should be shown automatically
+    const hasSeenScannerHelp = localStorage.getItem('sssf_hide_scan_help');
+    if (!hasSeenScannerHelp) {
+      setTimeout(() => {
+        if (isMounted.current) setShowInstructions(true);
+      }, 800);
+    }
+
     return () => {
       isMounted.current = false;
       clearTimeout(timer);
     };
   }, []);
+
+  const dismissInstructions = () => {
+    setShowInstructions(false);
+    localStorage.setItem('sssf_hide_scan_help', 'true');
+  };
 
   const stopCamera = async () => {
     if (scanTimeoutRef.current) {
@@ -301,6 +316,16 @@ export default function ScanPage() {
         >
           <ChevronLeft className="w-6 h-6 text-white" />
         </button>
+        <div className="flex-1" />
+        {!showCamera && (
+          <button
+            onClick={() => setShowInstructions(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-coral/10 hover:bg-coral/20 text-coral transition-all border border-coral/20"
+          >
+            <HelpCircle className="w-4 h-4" />
+            <span className="text-sm font-medium">{language === 'zh-TW' ? '如何掃描' : language === 'en' ? 'How to scan' : 'スキャン方法'}</span>
+          </button>
+        )}
       </div>
 
       {/* Main content */}
@@ -583,6 +608,67 @@ export default function ScanPage() {
               className="bg-coral hover:bg-coral-dark text-navy font-bold"
             >
               {t.addToDatabase}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Scan Instructions Dialog */}
+      <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
+        <DialogContent className="bg-navy border-white/20 text-white max-w-sm sm:max-w-md">
+          <DialogHeader>
+            <div className="w-16 h-16 bg-coral/20 rounded-full flex items-center justify-center mb-4 mx-auto">
+              <Info className="w-8 h-8 text-coral" />
+            </div>
+            <DialogTitle className="text-center text-2xl font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
+              {t.scanHowToTitle}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6 my-4">
+            <div className="flex gap-4">
+              <div className="shrink-0 w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
+                <ScanBarcode className="w-5 h-5 text-coral" />
+              </div>
+              <div>
+                <p className="text-white font-semibold mb-1">{language === 'zh-TW' ? '條碼掃描' : language === 'en' ? 'Barcode Scan' : 'バーコード'}</p>
+                <p className="text-white/60 text-sm leading-relaxed whitespace-pre-line">
+                  {t.scanHowToBarcode.split('\n')[1] || t.scanHowToBarcode}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="shrink-0 w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
+                <ScanText className="w-5 h-5 text-coral" />
+              </div>
+              <div>
+                <p className="text-white font-semibold mb-1">{language === 'zh-TW' ? '成分掃描' : language === 'en' ? 'Ingredient Scan' : '成分スキャン'}</p>
+                <p className="text-white/60 text-sm leading-relaxed whitespace-pre-line">
+                  {t.scanHowToIngredients.split('\n')[1] || t.scanHowToIngredients}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <div className="shrink-0 w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
+                <Camera className="w-5 h-5 text-coral" />
+              </div>
+              <div>
+                <p className="text-white font-semibold mb-1">{language === 'zh-TW' ? '為什麼要分析？' : language === 'en' ? 'Why Analyze?' : '分析の理由'}</p>
+                <p className="text-white/60 text-sm leading-relaxed whitespace-pre-line">
+                  {t.scanHowToPurpose.split('\n')[1] || t.scanHowToPurpose}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="mt-6">
+            <Button
+              onClick={dismissInstructions}
+              className="w-full bg-coral hover:bg-coral-dark text-navy font-bold py-6 rounded-xl shadow-lg hover:shadow-coral/20 transition-all"
+            >
+              {t.gotIt}
             </Button>
           </DialogFooter>
         </DialogContent>

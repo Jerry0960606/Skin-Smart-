@@ -119,6 +119,11 @@ export const translations = {
     scanIngredients: '掃描成分',
     scanHint: '相機僅用於掃描分析',
     scanProcessing: '正在掃描...',
+    scanHowToTitle: '如何掃描產品？',
+    scanHowToBarcode: '【掃描條碼】\n將相機對準產品背後的條碼即可。若資料庫中沒有此產品，系統會引導您手動添加。',
+    scanHowToIngredients: '【掃描成分】\n將相機對準包裝上的「全成分」清單，儘量保持清晰並按下拍照鍵，AI 將自動辨識。',
+    scanHowToPurpose: '【分析目的】\n我們會根據您的膚質檢測結果，即時分析成分的安全性與適配度，給您最科學的建議。',
+    gotIt: '我知道了',
 
     // Analyzing Page
     analyzingTitle: '分析中...',
@@ -363,6 +368,11 @@ export const translations = {
     scanIngredients: 'Scan Ingredients',
     scanHint: 'Camera is only used for scanning analysis',
     scanProcessing: 'Scanning...',
+    scanHowToTitle: 'How to scan?',
+    scanHowToBarcode: '[Scan Barcode]\nPoint the camera at the product barcode. If not found, you can contribute data manually.',
+    scanHowToIngredients: '[Scan Ingredients]\nPoint at the "Full Ingredients" list on the package. Keep it clear and tap capture for AI analysis.',
+    scanHowToPurpose: '[Why Scan?]\nWe cross-reference ingredients with your skin profile to ensure safety and compatibility.',
+    gotIt: 'Got it',
 
     // Analyzing Page
     analyzingTitle: 'Analyzing...',
@@ -607,6 +617,11 @@ export const translations = {
     scanIngredients: '成分をスキャン',
     scanHint: 'カメラはスキャン分析専用です',
     scanProcessing: 'スキャン中...',
+    scanHowToTitle: 'スキャン方法',
+    scanHowToBarcode: '【バーコードスキャン】\n製品背面のバーコードにカメラを向けてください。見つからない場合は手動で追加できます。',
+    scanHowToIngredients: '【成分スキャン】\nパッケージの「全成分表示」にカメラを向け、鮮明に写して撮影ボタンを押すと AI が認識します。',
+    scanHowToPurpose: '【分析の目的】\nあなたの肌質データと照合し、成分の安全性と適合性を科学的にアドバイスします。',
+    gotIt: '了解しました',
 
     // Analyzing Page
     analyzingTitle: '分析中...',
