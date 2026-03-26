@@ -407,10 +407,10 @@ export default function ScanPage() {
             </Tabs>
 
             {/* Hint */}
-            <p className="text-white/40 text-sm text-center mb-4 shrink-0">
-              <Camera className="w-4 h-4 inline mr-1" />
-              {t.scanHint}
-            </p>
+            <div className="flex items-center gap-2 text-white/40 text-sm text-center mb-4 shrink-0 px-6 py-2 bg-white/5 rounded-full border border-white/5">
+              <Camera className="w-4 h-4 text-coral" />
+              <span>{t.scanHint}</span>
+            </div>
           </div>
         ) : (
           /* Camera view */
@@ -511,6 +511,26 @@ export default function ScanPage() {
                 <div className="absolute left-0 right-0 h-0.5 bg-coral shadow-lg animate-scan"
                   style={{ boxShadow: '0 0 10px 2px rgba(232, 146, 124, 0.8)' }}
                 />
+
+                {/* In-camera Help Button */}
+                <div className="absolute top-4 right-4 pointer-events-auto">
+                   <button
+                     onClick={() => setShowInstructions(true)}
+                     className="p-2 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white/80 hover:bg-black/60 transition-all"
+                   >
+                     <HelpCircle className="w-5 h-5" />
+                   </button>
+                </div>
+
+                {/* Instruction Overlay based on mode */}
+                <div className="absolute bottom-6 left-0 right-0 px-6 text-center">
+                   <p className="inline-block px-4 py-2 rounded-full bg-black/60 backdrop-blur-md text-white/90 text-sm font-medium border border-white/10">
+                     {inputType === 'barcode' 
+                       ? (language === 'zh-TW' ? '將條碼放入框內' : 'Fit barcode in the frame')
+                       : (language === 'zh-TW' ? '對準成分表並拍照' : 'Align ingredients & capture')
+                     }
+                   </p>
+                </div>
               </div>
 
               {/* Timeout Prompt Overlay */}
@@ -615,62 +635,71 @@ export default function ScanPage() {
 
       {/* Scan Instructions Dialog */}
       <Dialog open={showInstructions} onOpenChange={setShowInstructions}>
-        <DialogContent className="bg-navy border-white/20 text-white max-w-sm sm:max-w-md">
-          <DialogHeader>
-            <div className="w-16 h-16 bg-coral/20 rounded-full flex items-center justify-center mb-4 mx-auto">
-              <Info className="w-8 h-8 text-coral" />
-            </div>
-            <DialogTitle className="text-center text-2xl font-bold bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-              {t.scanHowToTitle}
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-6 my-4">
-            <div className="flex gap-4">
-              <div className="shrink-0 w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
-                <ScanBarcode className="w-5 h-5 text-coral" />
-              </div>
-              <div>
-                <p className="text-white font-semibold mb-1">{language === 'zh-TW' ? '條碼掃描' : language === 'en' ? 'Barcode Scan' : 'バーコード'}</p>
-                <p className="text-white/60 text-sm leading-relaxed whitespace-pre-line">
-                  {t.scanHowToBarcode.split('\n')[1] || t.scanHowToBarcode}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="shrink-0 w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
-                <ScanText className="w-5 h-5 text-coral" />
-              </div>
-              <div>
-                <p className="text-white font-semibold mb-1">{language === 'zh-TW' ? '成分掃描' : language === 'en' ? 'Ingredient Scan' : '成分スキャン'}</p>
-                <p className="text-white/60 text-sm leading-relaxed whitespace-pre-line">
-                  {t.scanHowToIngredients.split('\n')[1] || t.scanHowToIngredients}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <div className="shrink-0 w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
-                <Camera className="w-5 h-5 text-coral" />
-              </div>
-              <div>
-                <p className="text-white font-semibold mb-1">{language === 'zh-TW' ? '為什麼要分析？' : language === 'en' ? 'Why Analyze?' : '分析の理由'}</p>
-                <p className="text-white/60 text-sm leading-relaxed whitespace-pre-line">
-                  {t.scanHowToPurpose.split('\n')[1] || t.scanHowToPurpose}
-                </p>
-              </div>
-            </div>
+        <DialogContent className="bg-navy border-white/20 text-white max-w-sm sm:max-w-md p-0 overflow-hidden">
+          <div className="relative h-32 bg-coral flex items-center justify-center overflow-hidden">
+             <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent" />
+             <div className="relative z-10 w-20 h-20 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/30">
+               <Info className="w-10 h-10 text-white" />
+             </div>
+             {/* Decorative circles */}
+             <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+             <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
           </div>
 
-          <DialogFooter className="mt-6">
-            <Button
-              onClick={dismissInstructions}
-              className="w-full bg-coral hover:bg-coral-dark text-navy font-bold py-6 rounded-xl shadow-lg hover:shadow-coral/20 transition-all"
-            >
-              {t.gotIt}
-            </Button>
-          </DialogFooter>
+          <div className="p-6">
+            <DialogHeader className="mb-6">
+              <DialogTitle className="text-center text-2xl font-bold">
+                {t.scanHowToTitle}
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              <div className="flex gap-4 group">
+                <div className="shrink-0 w-12 h-12 rounded-2xl bg-coral/10 flex items-center justify-center border border-coral/20 group-hover:bg-coral/20 transition-colors">
+                  <ScanBarcode className="w-6 h-6 text-coral" />
+                </div>
+                <div>
+                  <p className="text-white font-bold mb-1 text-lg">{language === 'zh-TW' ? '1. 條碼掃描' : language === 'en' ? '1. Barcode Scan' : '1. バーコード'}</p>
+                  <p className="text-white/70 text-sm leading-relaxed">
+                    {t.scanHowToBarcode.split('\n')[1] || t.scanHowToBarcode}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4 group">
+                <div className="shrink-0 w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20 group-hover:bg-amber-500/20 transition-colors">
+                  <ScanText className="w-6 h-6 text-amber-500" />
+                </div>
+                <div>
+                  <p className="text-white font-bold mb-1 text-lg">{language === 'zh-TW' ? '2. 成分辨識' : language === 'en' ? '2. Ingredient Scan' : '2. 成分辨識'}</p>
+                  <p className="text-white/70 text-sm leading-relaxed">
+                    {t.scanHowToIngredients.split('\n')[1] || t.scanHowToIngredients}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4 group">
+                <div className="shrink-0 w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:bg-emerald-500/20 transition-colors">
+                  <Info className="w-6 h-6 text-emerald-500" />
+                </div>
+                <div>
+                  <p className="text-white font-bold mb-1 text-lg">{language === 'zh-TW' ? '為何要掃描？' : language === 'en' ? 'Why Scan?' : 'スキャンの理由'}</p>
+                  <p className="text-white/70 text-sm leading-relaxed">
+                    {t.scanHowToPurpose.split('\n')[1] || t.scanHowToPurpose}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <Button
+                onClick={dismissInstructions}
+                className="w-full bg-coral hover:bg-coral-dark text-navy font-bold py-7 text-lg rounded-2xl shadow-xl shadow-coral/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              >
+                {t.gotIt}
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
