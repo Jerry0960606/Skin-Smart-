@@ -316,7 +316,21 @@ export default function ScanPage() {
         >
           <ChevronLeft className="w-6 h-6 text-white" />
         </button>
-        <div className="flex-1" />
+        
+        {/* Top Center Help Button */}
+        <div className="flex-1 flex justify-center">
+          {!showCamera && (
+            <button
+              onClick={() => setShowInstructions(true)}
+              className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-coral/10 hover:bg-coral/20 text-coral transition-all border border-coral/20 backdrop-blur-sm shadow-lg shadow-coral/5"
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span className="text-xs font-bold tracking-wide">{language === 'zh-TW' ? '如何掃描' : language === 'en' ? 'How to scan' : 'スキャン方法'}</span>
+            </button>
+          )}
+        </div>
+
+        <div className="w-10 opacity-0 pointer-events-none" aria-hidden="true" /> {/* Spacer to balance back button */}
       </div>
 
       {/* Main content */}
@@ -579,21 +593,6 @@ export default function ScanPage() {
           </div>
         )}
       </div>
-
-      {/* Floating Help Button */}
-      {!showCamera && (
-        <button
-          onClick={() => setShowInstructions(true)}
-          className="fixed bottom-24 left-6 z-50 flex items-center gap-2 px-4 py-3 rounded-2xl bg-navy border border-white/20 text-coral shadow-2xl hover:bg-white/5 transition-all active:scale-95 group"
-        >
-          <div className="w-8 h-8 rounded-full bg-coral/20 flex items-center justify-center group-hover:bg-coral/30 transition-colors">
-            <HelpCircle className="w-5 h-5" />
-          </div>
-          <span className="font-semibold text-sm mr-1">
-            {language === 'zh-TW' ? '如何掃描' : language === 'en' ? 'How to scan' : 'スキャン方法'}
-          </span>
-        </button>
-      )}
 
       {/* Disclaimer */}
       <div className="relative z-10 text-white/40 text-xs text-center mt-6">
