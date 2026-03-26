@@ -16,6 +16,7 @@ import AboutPage from '@/pages/AboutPage';
 import SettingsPage from '@/pages/SettingsPage';
 import ComparisonPage from '@/pages/ComparisonPage';
 import IngredientWikiPage from '@/pages/IngredientWikiPage';
+import SkinAnalysisResultPage from '@/pages/SkinAnalysisResultPage';
 import Menu from '@/components/Menu';
 import { Toaster } from '@/components/ui/sonner';
 import { Menu as MenuIcon } from 'lucide-react';
@@ -59,6 +60,8 @@ function App() {
         return <ComparisonPage />;
       case 'wiki':
         return <IngredientWikiPage />;
+      case 'skin-analysis-result':
+        return <SkinAnalysisResultPage />;
       default:
         return <CoverPage />;
     }

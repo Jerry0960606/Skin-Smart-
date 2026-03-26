@@ -248,6 +248,29 @@ export const translations = {
     // Footer
     footerText: 'Smart Buy Safe Skin © 2024',
     disclaimer: '本分析僅供參考，如有嚴重肌膚問題請諮詢專業皮膚科醫師',
+
+    // Skin Analysis Result Page
+    skinAnalysisResult: {
+      title: '您的肌膚分析結果',
+      typeTitle: '您的膚質是：',
+      types: {
+        dry: '乾性肌膚',
+        oily: '油性肌膚',
+        combination: '混合性肌膚',
+        normal: '中性肌膚',
+        sensitive: '敏感性肌膚',
+      },
+      adviceTitle: 'Dr. Lipstick 的保養建議',
+      advice: {
+        dry: '您的肌膚容易感到乾燥緊繃，建議加強保濕，選用含有神經醯胺或角鯊烷的滋潤型產品。',
+        oily: '您的油脂分泌較旺盛，建議選擇清爽控油的產品，並定期進行深層清潔，避免毛孔堵塞。',
+        combination: 'T字部位容易出油但臉頰偏乾，建議分區保養：T字控油，臉頰則加強保濕。',
+        normal: '恭喜！您的肌膚狀態非常穩定。維持基礎的清潔、保濕與防曬即可。',
+        sensitive: '您的肌膚較脆弱，容易泛紅刺激。請避開酒精、香料，優先選用成分簡單、溫和的修護產品。',
+      },
+      recommendationTitle: '適合您的化妝品',
+      startScanning: '開始掃描產品',
+    },
   },
 
   'en': {
@@ -497,6 +520,29 @@ export const translations = {
     // Footer
     footerText: 'Smart Buy Safe Skin © 2024',
     disclaimer: 'This analysis is for reference only. Consult a dermatologist for serious skin concerns.',
+
+    // Skin Analysis Result Page
+    skinAnalysisResult: {
+      title: 'Your Skin Analysis Result',
+      typeTitle: 'Your Skin Type:',
+      types: {
+        dry: 'Dry Skin',
+        oily: 'Oily Skin',
+        combination: 'Combination Skin',
+        normal: 'Normal Skin',
+        sensitive: 'Sensitive Skin',
+      },
+      adviceTitle: 'Dr. Lipstick\'s Maintenance Advice',
+      advice: {
+        dry: 'Your skin often feels tight and dry. Focus on deep hydration and look for products containing ceramides or squalane.',
+        oily: 'Your skin produces excess oil. Choose oil-control, lightweight products and maintain regular deep cleansing.',
+        combination: 'Oily T-zone but dry cheeks. We recommend dual-zone care: oil control for the T-zone and hydration for the cheeks.',
+        normal: 'Congratulations! Your skin is very stable. Maintain a basic routine of cleansing, hydration, and sun protection.',
+        sensitive: 'Your skin is fragile and easily irritated. Avoid alcohol and fragrance, and choose simple, soothing products.',
+      },
+      recommendationTitle: 'Recommended for You',
+      startScanning: 'Start Scanning Products',
+    },
   },
 
   'ja': {
@@ -746,6 +792,29 @@ export const translations = {
     // Footer
     footerText: 'Smart Buy Safe Skin © 2024',
     disclaimer: 'この分析は参考用です。深刻な肌の問題がある場合は、皮膚科医に相談してください。',
+
+    // Skin Analysis Result Page
+    skinAnalysisResult: {
+      title: '肌診断結果',
+      typeTitle: 'あなたの肌質は：',
+      types: {
+        dry: '乾燥肌',
+        oily: '脂性肌',
+        combination: '混合肌',
+        normal: '普通肌',
+        sensitive: '敏感肌',
+      },
+      adviceTitle: 'Dr. Lipstick のアドバイス',
+      advice: {
+        dry: 'お肌が乾燥しやすくつっぱり感があるため、高保湿成分のセラミドやスクワランを配合した製品をおすすめします。',
+        oily: '皮脂分泌が活発なため、さっぱりとした使用感のオイルコントロール製品を選び、丁寧な洗顔を心がけましょう。',
+        combination: 'Tゾーンはテカリやすく頬はカサつきがちです。部位ごとに、テカリ防止と保湿を使い分けるのがコツです。',
+        normal: 'おめでとうございます！お肌の状態はとても安定しています。清潔、保湿、UVケアの基本を続けましょう。',
+        sensitive: 'お肌のバリア機能が弱いため、アルコールや香料を避け、低刺激でシンプルな処方の製品を選びましょう。',
+      },
+      recommendationTitle: 'あなたにおすすめの製品',
+      startScanning: '製品スキャンを開始',
+    },
   },
 };
 

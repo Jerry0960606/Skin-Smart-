@@ -15,14 +15,14 @@ export default function ReminderPage() {
   }, []);
 
   return (
-    <div className="min-h-screen gradient-navy flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden">
+    <div className="min-h-screen gradient-navy flex flex-col items-center justify-start px-6 py-12 relative overflow-y-auto no-scrollbar">
       {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 right-1/4 w-40 h-40 bg-coral/10 rounded-full blur-3xl" />
       </div>
 
       {/* Main content */}
-      <div className={`relative z-10 flex flex-col items-center max-w-lg w-full transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <div className={`relative z-10 flex flex-col items-center max-w-lg w-full transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'} flex-1 flex flex-col justify-center`}>
         {/* Warning Icon */}
         <div className="mb-6">
           <div className="w-20 h-20 rounded-full bg-coral/20 flex items-center justify-center">
@@ -59,15 +59,15 @@ export default function ReminderPage() {
         {/* CTA Button */}
         <Button
           onClick={() => setCurrentPage('gender')}
-          className="bg-coral hover:bg-coral-dark text-navy font-bold text-lg px-12 py-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 w-full max-w-sm"
+          className="bg-coral hover:bg-coral-dark text-navy font-bold text-lg px-12 py-6 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 w-full max-sm:w-full max-w-xs"
         >
           {t.startAnalysis}
         </Button>
-      </div>
 
-      {/* Footer hint */}
-      <div className="absolute bottom-6 text-white/40 text-sm text-center px-6">
-        {t.disclaimer}
+        {/* Footer hint - moved into the flow to avoid overlapping */}
+        <div className="mt-12 text-white/40 text-sm text-center px-6 pb-4">
+          {t.disclaimer}
+        </div>
       </div>
     </div>
   );

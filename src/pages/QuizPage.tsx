@@ -75,7 +75,7 @@ export default function QuizPage() {
     } else {
       // Complete quiz
       calculateSkinType();
-      setCurrentPage('scan');
+      setCurrentPage('skin-analysis-result');
     }
   };
 
@@ -225,7 +225,7 @@ export default function QuizPage() {
             <Button
               onClick={() => {
                 calculateSkinType();
-                setCurrentPage('scan');
+                setCurrentPage('skin-analysis-result');
                 setShowReuseDialog(false);
               }}
               className="bg-coral hover:bg-coral-dark text-navy font-bold"
