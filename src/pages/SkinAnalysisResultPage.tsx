@@ -3,7 +3,6 @@ import { useAppStore } from '@/store/appStore';
 import { translations } from '@/i18n/translations';
 import { Button } from '@/components/ui/button';
 import { Sparkles, ArrowRight, ShieldCheck, Info } from 'lucide-react';
-import { productsDatabase } from '@/data/products';
 
 export default function SkinAnalysisResultPage() {
   const { language, setCurrentPage, skinType } = useAppStore();
@@ -26,11 +25,6 @@ export default function SkinAnalysisResultPage() {
       </div>
     );
   }
-
-  // Filter recommendations based on skin type
-  const recommendations = productsDatabase
-    .filter(p => p.goodFor.includes(skinType as string))
-    .slice(0, 5);
 
   return (
     <div className="min-h-screen gradient-navy flex flex-col px-6 py-12 relative overflow-y-auto no-scrollbar pb-32">
@@ -84,42 +78,44 @@ export default function SkinAnalysisResultPage() {
           </div>
         </div>
 
-        {/* Recommendations Section */}
-        <div className="mb-10">
+        {/* Description Card */}
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-6 mb-8 transform transition-all hover:bg-white/10">
+          <h3 className="text-white font-bold text-lg mb-3 flex items-center gap-2">
+            <Info className="w-5 h-5 text-coral" />
+            {tr.whatIsTitle.replace('{type}', tr.types[skinType as keyof typeof tr.types])}
+          </h3>
+          <p className="text-white/70 text-sm leading-relaxed">
+            {tr.whatIs[skinType as keyof typeof tr.whatIs]}
+          </p>
+        </div>
+
+        {/* Precautions Section */}
+        <div className="mb-12">
           <h3 className="text-white font-bold text-xl mb-6 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-coral" />
-            {tr.recommendationTitle}
+            <ShieldCheck className="w-5 h-5 text-coral" />
+            {tr.precautionTitle}
           </h3>
           
-          <div className="grid grid-cols-1 gap-4">
-            {recommendations.map((product, idx) => (
+          <div className="space-y-4">
+            {tr.precautions.map((item: string, idx: number) => (
               <div 
-                key={product.barcode}
-                className="bg-white/5 border border-white/10 p-4 rounded-2xl flex items-center gap-4 hover:bg-white/10 transition-colors cursor-pointer group"
+                key={idx}
+                className="bg-white/5 border border-white/10 p-4 rounded-2xl flex items-start gap-3 transition-colors hover:bg-white/10"
                 style={{ transitionDelay: `${idx * 100}ms` }}
               >
-                <div className="w-12 h-12 rounded-xl bg-navy/50 flex items-center justify-center text-coral font-bold text-[10px] shrink-0 border border-white/5 group-hover:border-coral/50 transition-colors">
-                  {product.category.substring(0, 3).toUpperCase()}
+                <div className="w-6 h-6 rounded-full bg-coral/20 flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-coral text-xs font-bold">{idx + 1}</span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-white text-sm font-medium truncate group-hover:text-coral transition-colors">
-                    {product.name[language]}
-                  </h4>
-                  <p className="text-white/40 text-xs truncate">
-                    {product.brand}
-                  </p>
-                </div>
-                <div className="text-coral flex items-center gap-1 font-bold">
-                  {product.safetyScore}
-                  <span className="text-[10px] text-white/30 font-normal">pts</span>
-                </div>
+                <p className="text-white/80 text-sm leading-relaxed">
+                  {item}
+                </p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* CTA Button */}
-        <div className="fixed bottom-8 left-6 right-6 z-50 max-w-lg mx-auto">
+        {/* CTA Button - Now part of the flow to avoid overlapping */}
+        <div className="mt-8 mb-12">
           <Button 
             onClick={() => setCurrentPage('scan')}
             className="w-full bg-coral hover:bg-coral-dark text-navy font-bold py-7 rounded-2xl text-lg shadow-xl shadow-coral/20 flex items-center justify-center gap-2 group transition-all"
@@ -127,11 +123,11 @@ export default function SkinAnalysisResultPage() {
             {tr.startScanning}
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
+          
+          <p className="mt-8 text-white/30 text-xs text-center italic">
+            {t.disclaimer}
+          </p>
         </div>
-        
-        <p className="mt-6 text-white/30 text-xs text-center italic">
-          {t.disclaimer}
-        </p>
       </div>
     </div>
   );
