@@ -125,7 +125,7 @@ export const useAppStore = create<AppState>()(
   persist(
     (set, get) => ({
       // Language
-      language: 'zh-TW',
+      language: 'en',
       setLanguage: (lang) => set({ language: lang }),
 
       // Auth

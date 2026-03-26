@@ -79,7 +79,7 @@ export default function CoverPage() {
           <motion.img
             animate={{ y: [0, -15, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            src="/images/Transition_Mascot.png"
+            src="/images/Iconic Character.png"
             alt="Dr. Lipstick"
             className="w-48 h-48 md:w-64 md:h-64 object-contain drop-shadow-[0_0_30px_rgba(255,127,80,0.3)]"
           />
