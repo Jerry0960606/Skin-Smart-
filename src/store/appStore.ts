@@ -158,7 +158,7 @@ export const useAppStore = create<AppState>()(
       skinProfile: null,
       calculateSkinType: () => {
         const answers = get().quizAnswers;
-        if (answers.length < 10) return;
+        console.log("Calculating skin type with answers:", answers.length);
 
         const getA = (id: number) => answers.find(a => a.questionId === id)?.answer || 0;
 

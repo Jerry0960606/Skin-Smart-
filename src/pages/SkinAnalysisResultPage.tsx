@@ -5,22 +5,35 @@ import { Button } from '@/components/ui/button';
 import { Sparkles, ArrowRight, ShieldCheck, Info } from 'lucide-react';
 
 export default function SkinAnalysisResultPage() {
-  const { language, setCurrentPage, skinType } = useAppStore();
+  const { language, setCurrentPage, skinType, quizAnswers, calculateSkinType } = useAppStore();
   const t = translations[language];
   const tr = t.skinAnalysisResult;
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    // If skinType is missing but we have answers, try calculating it
+    if (!skinType && quizAnswers.length >= 10) {
+      calculateSkinType();
+    }
     const timer = setTimeout(() => setIsVisible(true), 100);
     return () => clearTimeout(timer);
-  }, []);
+  }, [skinType, quizAnswers, calculateSkinType]);
 
   if (!skinType) {
     // Fallback if no skin type is found
     return (
-      <div className="min-h-screen gradient-navy flex items-center justify-center p-6">
-        <Button onClick={() => setCurrentPage('quiz')} className="bg-coral text-navy">
-          Please take the quiz first
+      <div className="min-h-screen gradient-navy flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-6">
+          <Sparkles className="w-10 h-10 text-coral opacity-20" />
+        </div>
+        <h2 className="text-xl text-white font-bold mb-4">
+          {language === 'zh-TW' ? '找不到分析結果' : language === 'en' ? 'Analysis result not found' : '結果が見つかりません'}
+        </h2>
+        <p className="text-white/60 mb-8 max-w-xs">
+          {language === 'zh-TW' ? '請完整完成肌膚檢測問卷，以獲得您的專屬保養建議。' : language === 'en' ? 'Please complete the skin quiz to get your personalized advice.' : 'パーソナライズされたアドバイスを受けるには、クイズを完了してください。'}
+        </p>
+        <Button onClick={() => setCurrentPage('quiz')} className="bg-coral text-navy font-bold px-8 py-6 rounded-2xl h-auto">
+          {language === 'zh-TW' ? '開始肌膚測驗' : language === 'en' ? 'Start Skin Quiz' : '肌診断を開始'}
         </Button>
       </div>
     );
