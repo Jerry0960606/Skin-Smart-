@@ -84,8 +84,8 @@ export default function HelpPage() {
 
             const botResponseText = matchedReply
                 ? matchedReply.response
-                : (language === 'zh-TW' ? '感謝您的提問，我目前還在學習中，稍後客服專員會為您解答！'
-                    : language === 'en' ? 'Thank you for your question. I am still learning, a support agent will assist you shortly!'
+                : (language === 'zh-TW' ? `很高興收到您的提論：「${text.length > 20 ? text.substring(0, 20) + '...' : text}」。Dr. Lipstick 目前還在學習成長中，稍後真人客服專員會為您解答！`
+                    : language === 'en' ? `Thank you for your question: "${text.length > 20 ? text.substring(0, 20) + '...' : text}". I am still learning, a support agent will assist you shortly!`
                         : 'ご質問ありがとうございます。現在学習中ですので、後ほどサポート担当者が回答いたします！');
 
             const botMsg: ChatMessage = {
