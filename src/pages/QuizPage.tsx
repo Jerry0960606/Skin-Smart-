@@ -98,7 +98,7 @@ export default function QuizPage() {
   const hasAnswer = currentAnswer !== undefined;
 
   return (
-    <div className="min-h-screen gradient-navy flex flex-col px-6 py-8 relative overflow-hidden">
+    <div className="min-h-screen gradient-navy flex flex-col px-6 py-8 relative overflow-y-auto">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 right-0 w-40 h-40 bg-coral/10 rounded-full blur-3xl" />
@@ -130,7 +130,7 @@ export default function QuizPage() {
       </div>
 
       {/* Main content */}
-      <div className={`relative z-10 flex-1 flex flex-col transition-all duration-500 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}>
+      <div className={`relative z-10 flex-1 flex flex-col min-h-0 transition-all duration-500 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}`}>
         {/* Question */}
         <div className="mb-6">
           <h2 className="text-2xl md:text-3xl font-bold text-white leading-relaxed">
@@ -151,7 +151,7 @@ export default function QuizPage() {
           )}
 
           {questionType === 'face' && (
-            <div className="flex-1 flex flex-col justify-center">
+            <div className="flex flex-col">
               <FaceClickQuestion onAnswer={handleFaceAnswer} />
             </div>
           )}

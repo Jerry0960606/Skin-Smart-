@@ -131,15 +131,15 @@ export default function FaceClickQuestion({ onAnswer }: FaceClickQuestionProps) 
       {/* Face image with clickable area */}
       <div
         ref={containerRef}
-        className="relative w-full max-w-xs mx-auto cursor-crosshair select-none touch-none"
-        style={{ maxHeight: '45vh' }}
+        className="relative w-full max-w-xs mx-auto cursor-crosshair select-none"
+        style={{ maxHeight: '35vh' }}
         onClick={handleImageClick}
       >
         <img
           src={useAppStore.getState().gender === 'boy' ? "/images/豆豆 male version.png" : "/images/豆豆 female version.png"}
           alt="Face"
           className="w-full h-full object-contain rounded-3xl"
-          style={{ maxHeight: '45vh' }}
+          style={{ maxHeight: '35vh' }}
           draggable={false}
         />
 
