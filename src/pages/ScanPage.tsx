@@ -346,15 +346,13 @@ export default function ScanPage() {
               {t.scanSubtitle}
             </p>
 
-            {/* Character with speech bubble cropped out */}
-            <div className="mb-6 sm:mb-10 shrink-0 h-32 sm:h-40 overflow-hidden flex items-center justify-center">
-              <div className="w-full h-full relative">
-                <img
-                  src={useAppStore.getState().gender === 'boy' ? "/images/Male Scan Caracter.png" : "/images/Female Scan Caracter.png"}
-                  alt="Ready to scan"
-                  className="w-full h-full object-contain scale-[1.3] translate-y-[15%]"
-                />
-              </div>
+            {/* Character - Using new bubble-less assets directly */}
+            <div className="mb-6 sm:mb-10 shrink-0">
+              <img
+                src={useAppStore.getState().gender === 'boy' ? "/images/Male Scan Caracter.png" : "/images/Female Scan Caracter.png"}
+                alt="Ready to scan"
+                className="w-32 h-32 sm:w-40 sm:h-40 object-contain mx-auto"
+              />
             </div>
 
             {/* Global style for camera video scaling */}
