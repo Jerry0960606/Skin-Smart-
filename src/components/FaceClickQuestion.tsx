@@ -136,7 +136,7 @@ export default function FaceClickQuestion({ onAnswer }: FaceClickQuestionProps) 
         onClick={handleImageClick}
       >
         <img
-          src="/images/豆豆 version 2.png"
+          src={useAppStore.getState().gender === 'boy' ? "/images/豆豆 male version.png" : "/images/豆豆 female version.png"}
           alt="Face"
           className="w-full h-full object-contain rounded-3xl"
           style={{ maxHeight: '45vh' }}
