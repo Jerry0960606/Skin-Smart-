@@ -22,7 +22,7 @@ export const translations = {
     history: '我的化妝品',
     settings: '設定',
     help: '幫助',
-    about: '關於我們',
+    about: '介紹我們',
 
     // Language
     language: '語言',

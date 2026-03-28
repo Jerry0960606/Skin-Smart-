@@ -146,13 +146,9 @@ export default function AnalyzingPage() {
         {/* Character analyzing */}
         <div className="mb-8 relative">
           <img
-            src={useAppStore.getState().gender === 'boy' ? "/images/Male Analyze process.png" : "/images/Female Analyze process.png"}
+            src={useAppStore.getState().gender === 'boy' ? "/images/豆豆 male version.png" : "/images/豆豆 female version.png"}
             alt="Analyzing"
             className="w-48 h-48 object-contain"
-            onError={(e) => {
-              // Fallback to generic if gender-specific is missing
-              (e.target as HTMLImageElement).src = "/images/Analyze process.png";
-            }}
           />
           {/* Animated dots */}
           <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
