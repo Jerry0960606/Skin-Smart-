@@ -146,7 +146,7 @@ export default function AnalyzingPage() {
         {/* Character analyzing */}
         <div className="mb-8 relative">
           <img
-            src="/images/Analyze process.png"
+            src={useAppStore.getState().gender === 'boy' ? "/images/豆豆 male version.png" : "/images/豆豆 female version.png"}
             alt="Analyzing"
             className="w-48 h-48 object-contain"
           />

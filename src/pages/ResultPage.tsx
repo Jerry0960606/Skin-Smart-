@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle, AlertTriangle, XCircle, FileText, ShoppingCart, Search, Sparkles } from 'lucide-react';
 import { searchProductByBarcode, searchProductsByIngredients } from '@/data/products';
 import { motion } from 'framer-motion';
+import ProductBox3D from '@/components/ProductBox3D';
 
 export default function ResultPage() {
   const { language, setCurrentPage, scanHistory, currentProduct, skinType } = useAppStore();
@@ -29,6 +30,8 @@ export default function ResultPage() {
     }
   }, [currentProduct]);
 
+  const gender = useAppStore.getState().gender;
+
   const resultConfig = {
     green: {
       bgColor: 'bg-emerald-500/20',
@@ -37,7 +40,7 @@ export default function ResultPage() {
       icon: CheckCircle,
       title: t.resultGreen,
       description: t.resultGreenDesc,
-      image: '/images/Green Resut.png',
+      image: gender === 'boy' ? '/images/Male green result.png' : '/images/Female green result.png',
       primaryAction: t.proceedToBuy,
       secondaryAction: t.seeFullReport,
     },
@@ -48,7 +51,7 @@ export default function ResultPage() {
       icon: AlertTriangle,
       title: t.resultYellow,
       description: t.resultYellowDesc,
-      image: '/images/Yellow Result.png',
+      image: gender === 'boy' ? '/images/Male yellow result.png' : '/images/Female yellow result.png',
       primaryAction: t.compareOthers,
       secondaryAction: t.seeFullReport,
     },
@@ -59,7 +62,7 @@ export default function ResultPage() {
       icon: XCircle,
       title: t.resultRed,
       description: t.resultRedDesc,
-      image: '/images/Red Result.png',
+      image: gender === 'boy' ? '/images/Male Red result.png' : '/images/Female red result.png',
       primaryAction: t.findAlternatives,
       secondaryAction: t.seeFullReport,
     },
@@ -233,20 +236,27 @@ export default function ResultPage() {
             </motion.div>
           )}
 
-          {/* Character image */}
+          {/* Character image / 3D Product Box */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 1.3 }}
             className="flex justify-center mb-6"
           >
-            <motion.img
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              src={config.image}
-              alt={config.title}
-              className="w-40 h-40 object-contain drop-shadow-2xl"
-            />
+            {result === 'green' ? (
+              <ProductBox3D
+                productName={foundProduct?.name?.[language] || latestRecord?.productName}
+                size="md"
+              />
+            ) : (
+              <motion.img
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                src={config.image}
+                alt={config.title}
+                className="w-40 h-40 object-contain drop-shadow-2xl"
+              />
+            )}
           </motion.div>
 
           {/* Scores */}

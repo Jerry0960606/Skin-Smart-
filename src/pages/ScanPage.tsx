@@ -349,7 +349,7 @@ export default function ScanPage() {
             {/* Character */}
             <div className="mb-6 sm:mb-10 shrink-0">
               <img
-                src="/images/Scan Caracter.png"
+                src={useAppStore.getState().gender === 'boy' ? "/images/Male Scan Caracter.png" : "/images/Female Scan Caracter.png"}
                 alt="Ready to scan"
                 className="w-32 h-32 sm:w-40 sm:h-40 object-contain mx-auto"
               />
