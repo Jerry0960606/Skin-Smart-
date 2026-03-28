@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle, AlertTriangle, XCircle, FileText, ShoppingCart, Search, Sparkles } from 'lucide-react';
 import { searchProductByBarcode, searchProductsByIngredients } from '@/data/products';
 import { motion } from 'framer-motion';
-import ProductBox3D from '@/components/ProductBox3D';
 
 export default function ResultPage() {
   const { language, setCurrentPage, scanHistory, currentProduct, skinType } = useAppStore();
@@ -236,27 +235,20 @@ export default function ResultPage() {
             </motion.div>
           )}
 
-          {/* Character image / 3D Product Box */}
+          {/* Character image - Always show mascot now */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 1.3 }}
             className="flex justify-center mb-6"
           >
-            {result === 'green' ? (
-              <ProductBox3D
-                productName={foundProduct?.name?.[language] || latestRecord?.productName}
-                size="md"
-              />
-            ) : (
-              <motion.img
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                src={config.image}
-                alt={config.title}
-                className="w-40 h-40 object-contain drop-shadow-2xl"
-              />
-            )}
+            <motion.img
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              src={config.image}
+              alt={config.title}
+              className="w-40 h-40 object-contain drop-shadow-2xl"
+            />
           </motion.div>
 
           {/* Scores */}
