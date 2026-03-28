@@ -245,6 +245,10 @@ export const translations = {
         }
       }
     },
+    scoreDetailLabels: {
+      why: '為什麼獲得這個分數？',
+      notes: '使用注意事項',
+    },
 
     // Footer
     footerText: 'Smart Buy Safe Skin © 2024',
@@ -532,6 +536,10 @@ export const translations = {
         }
       }
     },
+    scoreDetailLabels: {
+      why: 'Why this score?',
+      notes: 'Usage Notes',
+    },
 
     // Footer
     footerText: 'Smart Buy Safe Skin © 2024',
@@ -818,6 +826,10 @@ export const translations = {
           notes: '使用後の乾燥や肌荒れに注意してください。不快感がある場合は、より適した製品への変更を検討してください。'
         }
       }
+    },
+    scoreDetailLabels: {
+      why: 'なぜこのスコア？',
+      notes: '使用上の注意',
     },
 
     // Footer

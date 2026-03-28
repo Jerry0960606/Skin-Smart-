@@ -448,7 +448,7 @@ export default function ReportPage() {
               <div className="space-y-2">
                 <h4 className="text-coral font-bold flex items-center gap-2">
                   <Info className="w-4 h-4" />
-                  為什麼獲得這個分數？
+                  {t.scoreDetailLabels.why}
                 </h4>
                 <p className="text-white/80 text-sm leading-relaxed bg-white/5 p-4 rounded-xl border border-white/5">
                   {drawerData?.why}
@@ -457,7 +457,7 @@ export default function ReportPage() {
               <div className="space-y-2">
                 <h4 className="text-amber-400 font-bold flex items-center gap-2">
                   <AlertCircle className="w-4 h-4" />
-                  使用注意事項
+                  {t.scoreDetailLabels.notes}
                 </h4>
                 <p className="text-white/80 text-sm leading-relaxed bg-amber-500/5 p-4 rounded-xl border border-amber-500/10">
                   {drawerData?.notes}
