@@ -109,8 +109,8 @@ interface AppState {
   clearComparisonSelection: () => void;
 
   // Navigation
-  currentPage: 'cover' | 'reminder' | 'gender' | 'quiz' | 'scan' | 'manual-input' | 'login' | 'analyzing' | 'result' | 'report' | 'history' | 'cosmetics' | 'help' | 'about' | 'settings' | 'comparison' | 'wiki' | 'skin-analysis-result';
-  setCurrentPage: (page: 'cover' | 'reminder' | 'gender' | 'quiz' | 'scan' | 'manual-input' | 'login' | 'analyzing' | 'result' | 'report' | 'history' | 'cosmetics' | 'help' | 'about' | 'settings' | 'comparison' | 'wiki' | 'skin-analysis-result') => void;
+  currentPage: 'cover' | 'reminder' | 'gender' | 'quiz' | 'scan' | 'manual-input' | 'login' | 'analyzing' | 'result' | 'report' | 'history' | 'cosmetics' | 'help' | 'about' | 'label-info' | 'settings' | 'comparison' | 'wiki' | 'skin-analysis-result';
+  setCurrentPage: (page: 'cover' | 'reminder' | 'gender' | 'quiz' | 'scan' | 'manual-input' | 'login' | 'analyzing' | 'result' | 'report' | 'history' | 'cosmetics' | 'help' | 'about' | 'label-info' | 'settings' | 'comparison' | 'wiki' | 'skin-analysis-result') => void;
 
   // Menu
   isMenuOpen: boolean;

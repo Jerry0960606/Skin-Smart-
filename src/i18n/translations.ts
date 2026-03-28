@@ -22,7 +22,8 @@ export const translations = {
     history: '我的化妝品',
     settings: '設定',
     help: '幫助',
-    about: '介紹我們',
+    about: '關於我們',
+    labelInfo: '介紹分級標籤',
 
     // Language
     language: '語言',
@@ -54,12 +55,12 @@ export const translations = {
       q1: '你的肌膚通常感覺如何？',
       q1_option1: '乾燥緊繃',
       q1_option2: '油膩發亮',
-      q1_option3: '混合性（T字部位油）',
+      q1_option3: '混合性 (T字部位 (額頭、鼻子、下巴) 油)',
       q1_option4: '正常舒適',
 
       q2: '你的毛孔大小如何？',
       q2_option1: '幾乎看不見',
-      q2_option2: 'T字部位明顯',
+      q2_option2: 'T字部位 (額頭、鼻子、下巴) 明顯',
       q2_option3: '全臉都明顯',
       q2_option4: '偶爾明顯',
 
@@ -264,7 +265,7 @@ export const translations = {
       whatIs: {
         dry: '乾性肌膚通常是因為皮脂分泌不足，導致肌膚缺乏油分與水分。容易感到緊繃、粗糙，甚至出現脫皮或細紋。',
         oily: '油性肌膚的皮脂腺分泌旺盛，全臉容易發亮，毛孔較為明顯，且容易產生黑頭粉刺與痘痘問題。',
-        combination: '混合性肌膚是最常見的類型。通常在 T 字部位（額頭、鼻子、下巴）容易出油，而臉頰區域則偏向正常或乾燥。',
+        combination: '混合性肌膚是最常見的類型。通常在 T 字部位 (額頭、鼻子、下巴) 容易出油，而臉頰區域則偏向正常或乾燥。',
         normal: '中性肌膚水分與油分分泌平衡，毛孔細緻，肌膚紋理平滑，狀態非常穩定，是理想的健康肌膚。',
         sensitive: '敏感性肌膚其屏障功能較弱，容易受到環境或產品刺激而產生泛紅、乾癢或刺痛感。',
       },
@@ -272,7 +273,7 @@ export const translations = {
       advice: {
         dry: '您的肌膚容易感到乾燥緊繃，建議加強保濕，選用含有神經醯胺或角鯊烷的滋潤型產品。',
         oily: '您的油脂分泌較旺盛，建議選擇清爽控油的產品，並定期進行深層清潔，避免毛孔堵塞。',
-        combination: 'T字部位容易出油但臉頰偏乾，建議分區保養：T字控油，臉頰則加強保濕。',
+        combination: 'T 字部位 (額頭、鼻子、下巴) 容易出油但臉頰偏乾，建議分區保養：T 字區域控油，臉頰則加強保濕。',
         normal: '恭喜！您的肌膚狀態非常穩定。維持基礎的清潔、保濕與防曬即可。',
         sensitive: '您的肌膚較脆弱，容易泛紅刺激。請避開酒精、香料，優先選用成分簡單、溫和的修護產品。',
       },
@@ -309,6 +310,7 @@ export const translations = {
     settings: 'Settings',
     help: 'Help',
     about: 'About Us',
+    labelInfo: 'Classification Labels',
 
     // Language
     language: 'Language',
@@ -595,6 +597,7 @@ export const translations = {
     settings: '設定',
     help: 'ヘルプ',
     about: '私たちについて',
+    labelInfo: '分級標籤の紹介',
 
     // Language
     language: '言語',

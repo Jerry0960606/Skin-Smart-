@@ -32,6 +32,29 @@ export default function FaceClickQuestion({ onAnswer }: FaceClickQuestionProps) 
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
 
+    // Restriction Logic: Only allow clicks within the face area
+    // Roughly center: x:50, y:55, width:35, height:45 in percentage
+    const isInsideFace = (x >= 25 && x <= 75 && y >= 15 && y <= 85);
+
+    if (!isInsideFace) {
+      // Add touch feedback even for "wrong" clicks to show intention
+      const touchId = Date.now();
+      const newTouch = { id: touchId, x, y };
+      setRecentClicks(prev => [...prev, newTouch]);
+      setTimeout(() => {
+        setRecentClicks(prev => prev.filter(t => t.id !== touchId));
+      }, 800);
+
+      // Show reminder
+      const reminderText = language === 'zh-TW' ? '那邊應該不會長痘痘吧...' : 
+                          language === 'en' ? "Pimples probably don't grow there..." :
+                          "そこにはニキビはできないでしょう...";
+      
+      // Use sonner toast if available or show a temporary overlay
+      import('sonner').then(({ toast }) => toast.error(reminderText));
+      return;
+    }
+
     // Add touch feedback
     const touchId = Date.now();
     const newTouch = { id: touchId, x, y };

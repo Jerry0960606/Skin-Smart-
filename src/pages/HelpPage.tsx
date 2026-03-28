@@ -117,7 +117,7 @@ export default function HelpPage() {
                     <ChevronLeft className="w-6 h-6 text-white" />
                 </button>
                 <span className="text-white font-bold text-lg">
-                    {language === 'zh-TW' ? '線上客服' : language === 'en' ? 'Support Chat' : 'オンラインサポート'}
+                    {language === 'zh-TW' ? '幫助' : language === 'en' ? 'Help' : 'ヘルプ'}
                 </span>
                 <div className="w-10"></div> {/* Spacer for centering */}
             </div>
