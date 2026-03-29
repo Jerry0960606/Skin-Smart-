@@ -8,7 +8,7 @@ interface ProductBox3DProps {
   labelImage?: string;
 }
 
-export default function ProductBox3D({ productName, size = 'md', labelType = 'default', labelImage }: ProductBox3DProps) {
+export default function ProductBox3D({ size = 'md', labelType = 'default', labelImage }: ProductBox3DProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   // Dimensions based on size
@@ -19,12 +19,15 @@ export default function ProductBox3D({ productName, size = 'md', labelType = 'de
   }[size];
 
   const halfW = dims.w / 2;
+  const halfH = dims.h / 2;
   const halfD = dims.d / 2;
 
   // Shared face style
   const faceBase: React.CSSProperties = {
     position: 'absolute',
     backfaceVisibility: 'hidden',
+    top: 0,
+    left: 0,
   };
 
   // Floral/marble pattern via CSS gradients
@@ -53,7 +56,7 @@ export default function ProductBox3D({ productName, size = 'md', labelType = 'de
     <div
       className="relative flex items-center justify-center"
       style={{
-        perspective: '800px',
+        perspective: '1200px',
         width: dims.w + 60,
         height: dims.h + 40,
       }}
@@ -95,7 +98,7 @@ export default function ProductBox3D({ productName, size = 'md', labelType = 'de
               position: 'absolute',
               inset: 0,
               borderRadius: '4px',
-              border: '1px solid rgba(0,0,0,0.08)',
+              border: '1px solid rgba(0,0,0,0.1)',
               pointerEvents: 'none',
             }}
           />
@@ -104,12 +107,12 @@ export default function ProductBox3D({ productName, size = 'md', labelType = 'de
           <div
             style={{
               position: 'absolute',
-              top: '12%',
+              top: '5%',
               left: '50%',
               transform: 'translateX(-50%)',
-              width: labelType === 'default' ? '55%' : '65%', // Slightly larger for labels
+              width: labelType === 'default' ? '50%' : '60%', 
               zIndex: 2,
-              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))',
+              filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.18))',
             }}
           >
             <img
@@ -126,56 +129,37 @@ export default function ProductBox3D({ productName, size = 'md', labelType = 'de
           <div
             style={{
               position: 'absolute',
-              bottom: '10%',
+              bottom: '12%',
               left: '50%',
               transform: 'translateX(-50%)',
               textAlign: 'center',
-              width: '80%',
+              width: '85%',
             }}
           >
             <p
               style={{
+                fontFamily: "'Arial', sans-serif",
+                fontSize: size === 'sm' ? 14 : size === 'md' ? 18 : 22,
+                fontWeight: 900,
+                color: '#3a3530',
+                letterSpacing: '1px',
+                textTransform: 'uppercase',
+                lineHeight: 1,
+                marginBottom: 4,
+              }}
+            >
+              Lotion
+            </p>
+            <p
+              style={{
                 fontFamily: "'Georgia', serif",
-                fontSize: size === 'sm' ? 8 : size === 'md' ? 10 : 12,
+                fontSize: size === 'sm' ? 9 : size === 'md' ? 11 : 13,
                 fontStyle: 'italic',
                 color: '#8a7e72',
                 letterSpacing: '0.5px',
-                marginBottom: 2,
               }}
             >
-              Classic
-            </p>
-            <p
-              style={{
-                fontFamily: "'Arial', sans-serif",
-                fontSize: size === 'sm' ? 11 : size === 'md' ? 14 : 17,
-                fontWeight: 800,
-                color: '#3a3530',
-                letterSpacing: '1.5px',
-                textTransform: 'uppercase',
-                lineHeight: 1.1,
-              }}
-            >
-              {productName || 'BODY\nLOTION'}
-            </p>
-            <div
-              style={{
-                width: '40%',
-                height: 1,
-                background: 'rgba(0,0,0,0.15)',
-                margin: '6px auto',
-              }}
-            />
-            <p
-              style={{
-                fontFamily: "'Georgia', serif",
-                fontSize: size === 'sm' ? 5 : size === 'md' ? 6 : 7,
-                color: '#aaa196',
-                letterSpacing: '2px',
-                textTransform: 'uppercase',
-              }}
-            >
-              Premium Skincare
+              Skin Smart
             </p>
           </div>
         </div>
@@ -186,7 +170,7 @@ export default function ProductBox3D({ productName, size = 'md', labelType = 'de
             ...faceBase,
             width: dims.w,
             height: dims.h,
-            transform: `translateZ(-${halfD}px) rotateY(180deg)`,
+            transform: `rotateY(180deg) translateZ(${halfD}px)`,
             ...frontPattern,
             borderRadius: '4px',
             boxShadow: 'inset 0 0 20px rgba(0,0,0,0.06)',
@@ -250,7 +234,8 @@ export default function ProductBox3D({ productName, size = 'md', labelType = 'de
             ...faceBase,
             width: dims.d,
             height: dims.h,
-            transform: `translateX(${halfW}px) rotateY(90deg) translateZ(${halfW}px) translateX(-${halfD}px)`,
+            left: halfW - halfD,
+            transform: `rotateY(90deg) translateZ(${halfW}px)`,
             ...sidePattern,
             borderRadius: '2px',
           }}
@@ -271,7 +256,8 @@ export default function ProductBox3D({ productName, size = 'md', labelType = 'de
             ...faceBase,
             width: dims.d,
             height: dims.h,
-            transform: `translateX(-${halfW}px) rotateY(-90deg) translateZ(${halfW}px) translateX(${halfD}px)`,
+            left: halfW - halfD,
+            transform: `rotateY(-90deg) translateZ(${halfW}px)`,
             ...sidePattern,
             borderRadius: '2px',
           }}
@@ -292,8 +278,8 @@ export default function ProductBox3D({ productName, size = 'md', labelType = 'de
             ...faceBase,
             width: dims.w,
             height: dims.d,
-            transform: `translateY(-${halfD}px) rotateX(90deg)`,
-            transformOrigin: 'top center',
+            top: halfH - halfD,
+            transform: `rotateX(90deg) translateZ(${halfH}px)`,
             ...topPattern,
             borderRadius: '2px',
           }}
@@ -314,12 +300,21 @@ export default function ProductBox3D({ productName, size = 'md', labelType = 'de
             ...faceBase,
             width: dims.w,
             height: dims.d,
-            transform: `translateY(${dims.h - halfD}px) rotateX(-90deg)`,
-            transformOrigin: 'top center',
+            top: halfH - halfD,
+            transform: `rotateX(-90deg) translateZ(${halfH}px)`,
             background: '#d8d2cb',
             borderRadius: '2px',
           }}
-        />
+        >
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              border: '1px solid rgba(0,0,0,0.06)',
+              borderRadius: '2px',
+            }}
+          />
+        </div>
       </motion.div>
 
       {/* Ground shadow */}

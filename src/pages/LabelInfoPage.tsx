@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAppStore } from '@/store/appStore';
-import { ChevronLeft, ShieldCheck, AlertTriangle, XCircle, Info } from 'lucide-react';
+import { ChevronLeft, Info } from 'lucide-react';
 import ProductBox3D from '@/components/ProductBox3D';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -85,9 +85,9 @@ export default function LabelInfoPage() {
                 </div>
 
                 {/* Green */}
-                <div className="bg-white/5 border border-green-500/20 p-6 rounded-2xl flex items-start gap-4">
-                    <div className="bg-green-500/20 p-3 rounded-xl shrink-0">
-                        <ShieldCheck className="w-8 h-8 text-green-400" />
+                <div className="bg-white/5 border border-green-500/20 p-6 rounded-2xl flex items-start gap-4 hover:bg-white/10 transition-colors">
+                    <div className="bg-green-500/10 p-2 rounded-xl shrink-0">
+                        <img src="/images/Green Label.png" alt="Green" className="w-12 h-12 object-contain" />
                     </div>
                     <div>
                         <h3 className="text-green-400 font-bold text-xl mb-2">{t.green}</h3>
@@ -96,9 +96,9 @@ export default function LabelInfoPage() {
                 </div>
 
                 {/* Yellow */}
-                <div className="bg-white/5 border border-yellow-500/20 p-6 rounded-2xl flex items-start gap-4">
-                    <div className="bg-yellow-500/20 p-3 rounded-xl shrink-0">
-                        <AlertTriangle className="w-8 h-8 text-yellow-400" />
+                <div className="bg-white/5 border border-yellow-500/20 p-6 rounded-2xl flex items-start gap-4 hover:bg-white/10 transition-colors">
+                    <div className="bg-yellow-500/10 p-2 rounded-xl shrink-0">
+                        <img src="/images/Yellow Label.png" alt="Yellow" className="w-12 h-12 object-contain" />
                     </div>
                     <div>
                         <h3 className="text-yellow-400 font-bold text-xl mb-2">{t.yellow}</h3>
@@ -107,9 +107,9 @@ export default function LabelInfoPage() {
                 </div>
 
                 {/* Red */}
-                <div className="bg-white/5 border border-red-500/20 p-6 rounded-2xl flex items-start gap-4">
-                    <div className="bg-red-500/20 p-3 rounded-xl shrink-0">
-                        <XCircle className="w-8 h-8 text-red-400" />
+                <div className="bg-white/5 border border-red-500/20 p-6 rounded-2xl flex items-start gap-4 hover:bg-white/10 transition-colors">
+                    <div className="bg-red-500/10 p-2 rounded-xl shrink-0">
+                        <img src="/images/Red Label.png" alt="Red" className="w-12 h-12 object-contain" />
                     </div>
                     <div>
                         <h3 className="text-red-400 font-bold text-xl mb-2">{t.red}</h3>
