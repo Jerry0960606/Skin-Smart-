@@ -4,9 +4,11 @@ import { motion } from 'framer-motion';
 interface ProductBox3DProps {
   productName?: string;
   size?: 'sm' | 'md' | 'lg';
+  labelType?: 'green' | 'yellow' | 'red' | 'default';
+  labelImage?: string;
 }
 
-export default function ProductBox3D({ productName, size = 'md' }: ProductBox3DProps) {
+export default function ProductBox3D({ productName, size = 'md', labelType = 'default', labelImage }: ProductBox3DProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   // Dimensions based on size
@@ -98,20 +100,24 @@ export default function ProductBox3D({ productName, size = 'md' }: ProductBox3DP
             }}
           />
 
-          {/* Red Label / Ribbon */}
+          {/* Skin Smart Label / Certification Badge */}
           <div
             style={{
               position: 'absolute',
-              top: '8%',
+              top: '12%',
               left: '50%',
               transform: 'translateX(-50%)',
-              width: '55%',
+              width: labelType === 'default' ? '55%' : '65%', // Slightly larger for labels
               zIndex: 2,
+              filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))',
             }}
           >
             <img
-              src="/images/skin-smart-label.svg"
-              alt="Skin Smart Approved"
+              src={labelImage || (labelType === 'green' ? '/images/Green Label.png' : 
+                   labelType === 'yellow' ? '/images/Yellow Label.png' : 
+                   labelType === 'red' ? '/images/Red Label.png' : 
+                   '/images/skin-smart-label.svg')}
+              alt={labelType || "Skin Smart Approved"}
               style={{ width: '100%', height: 'auto' }}
             />
           </div>
